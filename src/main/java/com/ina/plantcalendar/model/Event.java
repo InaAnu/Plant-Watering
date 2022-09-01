@@ -1,51 +1,97 @@
 package com.ina.plantcalendar.model;
 
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 
 public class Event {
 
-    private ArrayList<String> plantNames;
+    private Plant plant;
     private EventType eventType;
-    private LocalDate date;
+    private LocalDate lastWateredOn;
+    private LocalDate nextOccurrence;
+//    public LocalDate today = LocalDate.now();
+    private ArrayList<Plant> plants = new ArrayList<>();
 
     public enum EventType {
         WATERING, FERTILIZING, REPLANTING
     }
 
-    public Event(ArrayList<String> plantNames, EventType eventType, LocalDate date) {
-        this.plantNames = plantNames;
+    public Event(Plant plant, EventType eventType, LocalDate lastWateredOn) {
+        this.plant = plant;
         this.eventType = eventType;
-        this.date = date;
+        int wateringRecurrence = 7; // TODO get this from the database using plant name.
+        this.nextOccurrence = getNextOccurrence(lastWateredOn,wateringRecurrence);
     }
 
     // TODO Figure out what I need here. XDDD
     // TODO Change to abstract class, to change behaviour depending on what type of event we have.
 
-
-    public LocalDate getDate() {
-        return date;
+    public LocalDate getNextOccurrence(LocalDate lastWateredOn, int wateringRecurrence) {
+        return lastWateredOn.plusDays(wateringRecurrence);
     }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
+    public void setNextOccurrence(LocalDate nextOccurrence) {
+        this.nextOccurrence = nextOccurrence;
+    }
+
+    public boolean addPlant(String scientificName, String alias, Plant.PlantType type, int wateringPattern) {
+        if(findPlantByName(scientificName) == null) {
+            this.plants.add(new Plant(scientificName, alias, type, wateringPattern));
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean addPlant(String scientificName, Plant.PlantType type, int wateringPatternNumber) {
+        if(findPlantByScientificName(scientificName) == null) {
+            this.plants.add(new Plant(scientificName, type, wateringPatternNumber));
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public Plant findPlantByScientificName(String scientificName) {
+        for(Plant plant: plants) {
+            if(plant.getScientificName().equals(scientificName)){
+                return plant;
+            }
+        }
+        return null;
+    }
+
+    public ArrayList<Plant> findPlantByName(String name) {
+        ArrayList<Plant> matchingPlants = new ArrayList<>();
+        for(Plant plant: plants) {
+            if(plant.getScientificName().equals(name) || plant.getAlias().equals(name)){
+                matchingPlants.add(plant);
+            }
+        }
+        return matchingPlants;
     }
 
     @Override
     public String toString() {
-        StringBuilder plantsForTheEvent = new StringBuilder();
-        for (String plantName:plantNames) {
-            if(plantsForTheEvent.length() != 0) {
-                plantsForTheEvent.append(", ");
-            }
-            plantsForTheEvent.append(plantName);
-        }
-        String dayOfTheWeek = date.getDayOfWeek().toString();
-        String dateDayMonth = date.getDayOfMonth() + " " + date.getMonth().toString().substring(0,1) + date.getMonth().toString().substring(1).toLowerCase();
-        // return eventType.toString().substring(0,1) + eventType.toString().substring(1).toLowerCase() + ": " + date.getDayOfMonth() + " " + date.getMonth().toString().substring(0,1) + date.getMonth().toString().substring(1).toLowerCase() + " " + date.getYear();
-        return dayOfTheWeek.toString().substring(0,1) + dayOfTheWeek.toString().substring(1).toLowerCase() + ", " + dateDayMonth + " | " + eventType.toString().substring(0,1) + eventType.toString().substring(1).toLowerCase() + ": " + plantsForTheEvent;
+        String dayOfTheWeek = nextOccurrence.getDayOfWeek().toString();
+        String dateDayMonth = nextOccurrence.getDayOfMonth() + " " + nextOccurrence.getMonth().toString().substring(0,1) + nextOccurrence.getMonth().toString().substring(1).toLowerCase();
+        return dayOfTheWeek.substring(0,1) + dayOfTheWeek.substring(1).toLowerCase() + ", " + dateDayMonth + " | " + eventType.toString().substring(0,1) + eventType.toString().substring(1).toLowerCase() + ": " + plant.getScientificName();
     }
+
+//    Previous pattern for displaying events
+//    @Override
+//    public String toString() {
+//        StringBuilder plantsForTheEvent = new StringBuilder();
+//        for (String plantName:plantNames) {
+//            if(plantsForTheEvent.length() != 0) {
+//                plantsForTheEvent.append(", ");
+//            }
+//            plantsForTheEvent.append(plantName);
+//        }
+//        String dayOfTheWeek = nextOccurrence.getDayOfWeek().toString();
+//        String dateDayMonth = nextOccurrence.getDayOfMonth() + " " + nextOccurrence.getMonth().toString().substring(0,1) + nextOccurrence.getMonth().toString().substring(1).toLowerCase();
+//        return dayOfTheWeek.toString().substring(0,1) + dayOfTheWeek.toString().substring(1).toLowerCase() + ", " + dateDayMonth + " | " + eventType.toString().substring(0,1) + eventType.toString().substring(1).toLowerCase() + ": " + plantsForTheEvent;
+//    }
     // TODO Can I do this in a simpler way to get the WATERING and JUNE to be Watering and June?
 }

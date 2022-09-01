@@ -29,7 +29,7 @@ public class MyPlantsController {
     @RequestMapping(value={"/myplants"})
     public String displayMyPlantsPage(@RequestParam(required = false, name = "add_plant") boolean addPlant, Model model) {
         model.addAttribute("add_plant", addPlant);
-        model.addAttribute("plant", new Plant("Calathea Lancifolia", "Rattlesnake plant", Plant.PlantType.CALATHEA, "1x/1week"));
+        model.addAttribute("plant", new Plant("Calathea Lancifolia", "Rattlesnake plant", Plant.PlantType.CALATHEA, 7));
 
         // Plants in the gallery
         DataSource dataSource = new DataSource();
@@ -37,7 +37,7 @@ public class MyPlantsController {
         for (int i=0; i<6; i++) {
             model.addAttribute("plant" + (i+1) + "_name", dataSource.queryPlants().get(i).getScientificName());
             model.addAttribute("plant" + (i+1) + "_alias", dataSource.queryPlants().get(i).getAlias());
-            model.addAttribute("plant" + (i+1) + "_watering_pattern", dataSource.queryPlants().get(i).getWateringPattern());
+            model.addAttribute("plant" + (i+1) + "_watering_pattern", dataSource.queryPlants().get(i).getWateringPatternText());
         }
         dataSource.close();
         return "my-plants.html";

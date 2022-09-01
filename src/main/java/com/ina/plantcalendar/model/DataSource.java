@@ -20,27 +20,30 @@ public class DataSource {
     public static final String COLUMN_PLANT_INFO_ID = "_id";
     public static final String COLUMN_PLANT_INFO_SCIENTIFIC_NAME = "scientific_name";
     public static final String COLUMN_PLANT_INFO_TYPE = "type";
-    public static final String COLUMN_PLANT_INFO_WATERING_PATTERN = "watering_pattern";
+    public static final String COLUMN_PLANT_INFO_WATERING_RECURRENCE = "watering_recurrence";
 
     public static final String TABLE_PLANT_INFO_LIST_VIEW = "plant_list";
     public static final String CREATE_PLANT_INFO_LIST_VIEW = "CREATE VIEW IF NOT EXISTS " + TABLE_PLANT_INFO_LIST_VIEW + " AS " +
             "SELECT " + TABLE_PLANT_INFO + "." + COLUMN_PLANT_INFO_ID + ", " + TABLE_PLANT_INFO + "." + COLUMN_PLANT_INFO_SCIENTIFIC_NAME + ", " +
             TABLE_PLANT_ALIASES + "." + COLUMN_PLANT_ALIASES_ALIAS + ", " + TABLE_PLANT_INFO + "." + COLUMN_PLANT_INFO_TYPE + ", " +
-            TABLE_PLANT_INFO + "." + COLUMN_PLANT_INFO_WATERING_PATTERN +
+            TABLE_PLANT_INFO + "." + COLUMN_PLANT_INFO_WATERING_RECURRENCE +
             " FROM " + TABLE_PLANT_INFO + " INNER JOIN " + TABLE_PLANT_ALIASES +
             " ON " + TABLE_PLANT_INFO + "." + COLUMN_PLANT_INFO_ID + " = " + TABLE_PLANT_ALIASES + "." + COLUMN_PLANT_ALIASES_SCIENTIFIC_NAME +
             " ORDER BY " + TABLE_PLANT_INFO + "." + COLUMN_PLANT_INFO_ID + ", " + TABLE_PLANT_INFO + "." + COLUMN_PLANT_INFO_SCIENTIFIC_NAME + ", " +
             TABLE_PLANT_ALIASES + "." + COLUMN_PLANT_ALIASES_ALIAS + ", " + TABLE_PLANT_INFO + "." + COLUMN_PLANT_INFO_TYPE + ", " +
-            TABLE_PLANT_INFO + "." + COLUMN_PLANT_INFO_WATERING_PATTERN;
+            TABLE_PLANT_INFO + "." + COLUMN_PLANT_INFO_WATERING_RECURRENCE;
 
     public static final String QUERY_PLANT_BY_NAME = "SELECT *" +
-//            + COLUMN_PLANT_INFO_SCIENTIFIC_NAME + ", " + COLUMN_PLANT_ALIASES_ALIAS + ", " +
-//            COLUMN_PLANT_INFO_TYPE + ", " + COLUMN_PLANT_INFO_WATERING_PATTERN +
             " FROM " + TABLE_PLANT_INFO_LIST_VIEW +
             " WHERE " + COLUMN_PLANT_ALIASES_ALIAS + " LIKE ? OR " + COLUMN_PLANT_INFO_SCIENTIFIC_NAME + " LIKE ?";
 
+    public static final String QUERY_PLANT_BY_EXACT_SCIENTIFIC_NAME = "SELECT *" +
+            " FROM " + TABLE_PLANT_INFO_LIST_VIEW +
+            " WHERE " + COLUMN_PLANT_INFO_SCIENTIFIC_NAME + " = ?";
+
     public static final String QUERY_PLANTS = "SELECT * FROM " + TABLE_PLANT_INFO_LIST_VIEW;
     private PreparedStatement queryPlantByName;
+    private PreparedStatement queryPlantByExactScientificName;
 
     private Connection conn;
 
@@ -49,9 +52,10 @@ public class DataSource {
     public boolean open() {
         try {
             conn = DriverManager.getConnection(CONNECTION_STRING);
-            System.out.println(CREATE_PLANT_INFO_LIST_VIEW);
-            System.out.println(QUERY_PLANT_BY_NAME);
+//            System.out.println(CREATE_PLANT_INFO_LIST_VIEW);
+//            System.out.println(QUERY_PLANT_BY_NAME);
             queryPlantByName = conn.prepareStatement(QUERY_PLANT_BY_NAME);
+            queryPlantByExactScientificName = conn.prepareStatement(QUERY_PLANT_BY_EXACT_SCIENTIFIC_NAME);
             return true;
         } catch (SQLException e){
             System.out.println("Could not connect to database: " + e);
@@ -68,6 +72,21 @@ public class DataSource {
             System.out.println("Could not close connection to database: " + e);
         }
     }
+
+//    public void test(){
+//        try (Statement statement = conn.createStatement()){
+//            ResultSet resultSet = statement.executeQuery("pragma table_info(plant_list)");
+//
+//            List<String> columns = new ArrayList<>();
+//            while(resultSet.next()) {
+//                columns.add(resultSet.getString("name") + " " + resultSet.getString("type"));
+//                System.out.println(resultSet.getString("name") + " " + resultSet.getString("type"));
+//            }
+//            System.out.println("Gequeried");
+//        } catch (SQLException e) {
+//            System.out.println("Create view failed: " + e.getMessage());
+//        }
+//    }
 
     public boolean createViewForPlantInfo() {
         try (Statement statement = conn.createStatement()){
@@ -93,18 +112,37 @@ public class DataSource {
                 plant.setScientificName(resultSet.getString("scientific_name"));
                 plant.setAlias(resultSet.getString("alias"));
                 plant.setType(Plant.PlantType.valueOf(resultSet.getString("type")));
-                plant.setWateringPattern(resultSet.getString("watering_pattern"));
+                plant.setWateringRecurrence(resultSet.getInt("watering_recurrence"));
                 plants.add(plant);
             }
             return plants;
         } catch(SQLException e) {
-            System.out.println("Query failed: " + e.getMessage());
+            System.out.println("Querying plant by name failed: " + e.getMessage());
+            return null;
+        }
+    }
+
+    public Plant queryPlantByExactScientificName(String exactScientificName) {
+
+        try {
+            queryPlantByExactScientificName.setString(1, exactScientificName);
+            ResultSet resultSet = queryPlantByExactScientificName.executeQuery();
+
+            Plant plant = new Plant();
+                plant.setScientificName(resultSet.getString("scientific_name"));
+                plant.setAlias(resultSet.getString("alias"));
+                plant.setType(Plant.PlantType.valueOf(resultSet.getString("type")));
+                plant.setWateringRecurrence(resultSet.getInt("watering_recurrence"));
+
+                return plant;
+        } catch(SQLException e) {
+            System.out.println("Querying plant by exact scientific name failed: " + e.getMessage());
             return null;
         }
     }
 
     public List<Plant> queryPlants() {
-
+        System.out.println(QUERY_PLANTS);
         try(Statement statement = conn.createStatement();
             ResultSet resultSet = statement.executeQuery(QUERY_PLANTS)) {
             List<Plant> plants = new ArrayList<>();
@@ -113,12 +151,14 @@ public class DataSource {
                 plant.setScientificName(resultSet.getString("scientific_name"));
                 plant.setAlias(resultSet.getString("alias"));
                 plant.setType(Plant.PlantType.valueOf(resultSet.getString("type")));
-                plant.setWateringPattern(resultSet.getString("watering_pattern"));
+                int wateringRecurrence = resultSet.getInt("watering_recurrence");
+                plant.setWateringRecurrence(wateringRecurrence);
+                plant.setWateringPatternText(wateringRecurrence);
                 plants.add(plant);
             }
             return plants;
         } catch (SQLException e) {
-            System.out.println("Query failed:" + e);
+            System.out.println("Querying plants failed:" + e);
             return null;
         }
     }
