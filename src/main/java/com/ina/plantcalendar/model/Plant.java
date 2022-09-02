@@ -11,6 +11,7 @@ public class Plant {
     @NotBlank(message = "Name must not be blank")
     @Size(min=3, message = "Name must be at least 3 characters long")
     private String scientificName;
+    @NotBlank(message = "Your plants does not have a name?! Just call it \"The Plant in the Kitchen\"")
     private String alias;
     @NotBlank(message = "Type must not be blank")
     private PlantType type;

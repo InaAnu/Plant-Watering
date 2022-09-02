@@ -80,14 +80,15 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                     </ul>
                     <form th:action="@{/savePlant}" method="post" th:object="${plant}">
                         <input type="text" th:field="*{scientificName}" placeholder="Plant name" required=true>
-                        <input type="text" th:field="*{alias}" placeholder="Alias" required="false">
-                        <select type="text" th:field="*{type}" placeholder="Type" required="">
+                        <input type="text" th:field="*{alias}" placeholder="Alias" required="true">
+                        <select type="text" th:field="*{type}" placeholder="Type" required="true">
                             <option value="">Type </option>
                             <option value="Plant.PlantType.CALATHEA">Calathea</option>
 <!--                            TODO implement the other options for the dropdown menu-->
                         </select>
 <!--                        <textarea th:field="*{additionalInfo}" placeholder="Additional information" required=""></textarea>-->
-                        <input type="text" th:field="*{wateringPattern}" placeholder="Watering pattern" required="">
+                        <input type="text" th:field="*{wateringRecurrence}" placeholder="How often does it need to be watered?" required=""> <!--TODO This should be a dropdown menu with options -->
+
                         <!-- TODO Add an option to add a photo of your plant. If no photo, form should be accepted, but only the name in a fancy font should be displayed in the gallery. -->
                         <button class="btn1">Submit</button>
                     </form>

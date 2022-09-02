@@ -18,7 +18,7 @@ public class MainForTests {
 //            return;
 //        }
         dataSource.open();
-        dataSource.test();
+//        dataSource.test();
 //
         dataSource.createViewForPlantInfo();
 
@@ -42,6 +42,8 @@ public class MainForTests {
             }
         }
 
+        System.out.println("-----");
+        System.out.println(dataSource.queryPlantByExactScientificName("Calathea Lancifolia"));
 //        System.out.println(dataSource.queryPlants().get(0).getScientificName());
 
 //        ArrayList<String> plantNames1 = new ArrayList<>();

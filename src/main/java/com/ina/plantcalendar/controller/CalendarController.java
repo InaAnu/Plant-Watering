@@ -4,6 +4,7 @@ package com.ina.plantcalendar.controller;
 //import com.ina.plantcalendar.model.Events;
 import com.ina.plantcalendar.model.Event;
 import com.ina.plantcalendar.model.Events;
+import com.ina.plantcalendar.model.Plant;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,39 +23,22 @@ public class CalendarController {
 
 //        TODO Change this section to use the code from the database
 
-        ArrayList<String> plantNames1 = new ArrayList<>();
-        plantNames1.add("Rattlesnake Plant");
-        plantNames1.add("Basil");
-        plantNames1.add("Fascinator Tricolor");
-        Event event1 = new Event(plantNames1, Event.EventType.WATERING, LocalDate.now().minus(Period.ofDays(7)));
-
-        ArrayList<String> plantNames2 = new ArrayList<>();
-        plantNames2.add("Basil");
-        Event event2 = new Event(plantNames2, Event.EventType.WATERING, LocalDate.now().minus(Period.ofDays(6)));
-
-        ArrayList<String> plantNames3 = new ArrayList<>();
-        plantNames3.add("Basil");
-        plantNames3.add("Golden Pothos");
-        plantNames3.add("Verona Vein");
-        Event event3 = new Event(plantNames3, Event.EventType.WATERING, LocalDate.now().minus(Period.ofDays(5)));
-
-        ArrayList<String> plantNames4 = new ArrayList<>();
-        plantNames4.add("Basil");
-        plantNames4.add("Tundra Tornado");
-        Event event4 = new Event(plantNames4, Event.EventType.WATERING, LocalDate.now().minus(Period.ofDays(4)));
-
-        ArrayList<String> plantNames5 = new ArrayList<>();
-        plantNames5.add("Basil");
-        Event event5 = new Event(plantNames5, Event.EventType.WATERING, LocalDate.now().minus(Period.ofDays(3)));
+        Plant calathea = new Plant("Calathea Lancifolia", "Rattlesnake Plant", Plant.PlantType.CALATHEA, 7);
+        Plant maranta = new Plant("Maranta Leuconeura", "Fascinator Tricolor", Plant.PlantType.MARANTA, 7);
+        Plant goldenPhotos = new Plant("Epipremnum Aureum", "Golden Pothos", Plant.PlantType.ARUM, 7);
+        Plant basil = new Plant("Ocium Basilicum", "Basil", Plant.PlantType.HERB, 1);
+        Plant veronaVein = new Plant("Parthenocissum Striata", "Verona Vein", Plant.PlantType.CLIMBER, 7);
+        Plant tundraTornado = new Plant("Sedum Makinoi", "Tundra Tornado", Plant.PlantType.SUCCULENT, 14);
 
         Events events = new Events();
-        events.addEvent(event1);
-        events.addEvent(event2);
-        events.addEvent(event3);
-        events.addEvent(event4);
-        events.addEvent(event5);
+        events.addEvent(calathea, Event.EventType.WATERING, LocalDate.now().minusDays(6));
+        events.addEvent(maranta, Event.EventType.WATERING, LocalDate.now().minusDays(5));
+        events.addEvent(tundraTornado, Event.EventType.WATERING, LocalDate.now().minusDays(7));
+        events.addEvent(basil, Event.EventType.WATERING, LocalDate.now().minusDays(1));
+        events.addEvent(veronaVein, Event.EventType.WATERING, LocalDate.now().minusDays(3));
+        events.addEvent(goldenPhotos, Event.EventType.WATERING,LocalDate.now().minusDays(4));
 
-        upcomingEvents = events.getUpcomingEvents(5);
+        upcomingEvents = events.getUpcomingEvents(6);
 
         model.addAttribute("upcoming_events", upcomingEvents);
         return "calendar.html";

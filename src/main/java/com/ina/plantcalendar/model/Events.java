@@ -31,18 +31,25 @@ public class Events {
         events.add(event);
     }
 
-    // TODO This function currently DOES NOT WORK - make it work
-    public ArrayList<Event> getEventsForOneDay(LocalDate dayOfTheEvent) {
-        StringBuilder plantsForTheEvent = new StringBuilder();
-        for (String plantName:plantNames) {
-            if(plantsForTheEvent.length() != 0) {
-                plantsForTheEvent.append(", ");
-            }
-            plantsForTheEvent.append(plantName);
-        }
-        String dayOfTheWeek = nextOccurrence.getDayOfWeek().toString();
-        String dateDayMonth = nextOccurrence.getDayOfMonth() + " " + nextOccurrence.getMonth().toString().substring(0,1) + nextOccurrence.getMonth().toString().substring(1).toLowerCase();
-        return dayOfTheWeek.toString().substring(0,1) + dayOfTheWeek.toString().substring(1).toLowerCase() + ", " + dateDayMonth + " | " + eventType.toString().substring(0,1) + eventType.toString().substring(1).toLowerCase() + ": " + plantsForTheEvent;
+    public void addEvent(Plant plant, Event.EventType eventType, LocalDate lastWateredOn) {
+        // TODO if such event already exists, do not add a new event
+        Event event = new Event(plant, eventType, lastWateredOn);
+        events.add(event);
     }
+
+//    // TODO This function currently DOES NOT WORK - make it work
+//    public ArrayList<Event> getEventsForOneDay(LocalDate dayOfTheEvent) {
+//
+//        StringBuilder plantsForTheEvent = new StringBuilder();
+//        for (String plantName:plantNames) {
+//            if(plantsForTheEvent.length() != 0) {
+//                plantsForTheEvent.append(", ");
+//            }
+//            plantsForTheEvent.append(plantName);
+//        }
+//        String dayOfTheWeek = nextOccurrence.getDayOfWeek().toString();
+//        String dateDayMonth = nextOccurrence.getDayOfMonth() + " " + nextOccurrence.getMonth().toString().substring(0,1) + nextOccurrence.getMonth().toString().substring(1).toLowerCase();
+//        return dayOfTheWeek.toString().substring(0,1) + dayOfTheWeek.toString().substring(1).toLowerCase() + ", " + dateDayMonth + " | " + eventType.toString().substring(0,1) + eventType.toString().substring(1).toLowerCase() + ": " + plantsForTheEvent;
+//    }
     // TODO Can I do this in a simpler way to get the WATERING and JUNE to be Watering and June?
 }
