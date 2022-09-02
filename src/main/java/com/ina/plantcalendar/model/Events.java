@@ -11,6 +11,7 @@ public class Events {
 
     private ArrayList<Event> events = new ArrayList<>();
     private DataSource dataSource = new DataSource();
+    private LocalDate today = LocalDate.now();
 
     public ArrayList<Event> getUpcomingEvents (int amount) {
         ArrayList<Event> upcomingEvents = new ArrayList<>();
@@ -35,6 +36,22 @@ public class Events {
         // TODO if such event already exists, do not add a new event
         Event event = new Event(plant, eventType, lastWateredOn);
         events.add(event);
+    }
+
+    public ArrayList<AggregatedEventsPerDay> getUpcomingAggregatedEventsForTheUpcomingWeek() {
+        ArrayList<AggregatedEventsPerDay> upcomingEvents = new ArrayList<>();
+
+        for(int i=0; i<7; i++) {
+            LocalDate date = today.plusDays(i);
+            AggregatedEventsPerDay events = new AggregatedEventsPerDay(date, Event.EventType.WATERING);
+
+            // TODO Take this information out of the database
+            ArrayList<String> plantsForTheEvent = new ArrayList<>();
+            plantsForTheEvent.add("Basil");
+            plantsForTheEvent.add("Calathea");
+            events.setPlantsForTheEvent(plantsForTheEvent);
+        }
+        return upcomingEvents;
     }
 
 //    // TODO This function currently DOES NOT WORK - make it work
