@@ -187,7 +187,7 @@ public class DataSource {
 
         // TODO I need to query a VIEW where the plant details are also in the table, rather than event, which will show only the number of the plant, from which we need to get further details.
         try {
-            queryExactEvent.setString(1, scientificName); // TODO This is null, need to find out why
+            queryExactEvent.setString(1, scientificName);
             queryExactEvent.setString(2, eventType.toString());
             queryExactEvent.setString(3, date.toString());
             ResultSet resultSet = queryExactEvent.executeQuery();
