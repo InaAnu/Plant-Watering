@@ -11,10 +11,12 @@ public class Event {
     private LocalDate lastWateredOn;
     private LocalDate nextOccurrence;
 //    public LocalDate today = LocalDate.now();
-    private ArrayList<Plant> plants = new ArrayList<>();
 
     public enum EventType {
         WATERING, FERTILIZING, REPLANTING
+    }
+
+    public Event() {
     }
 
     public Event(Plant plant, EventType eventType, LocalDate lastWateredOn) {
@@ -32,6 +34,34 @@ public class Event {
 
     public void setNextOccurrence(LocalDate nextOccurrence) {
         this.nextOccurrence = nextOccurrence;
+    }
+
+    public Plant getPlant() {
+        return plant;
+    }
+
+    public void setPlant(Plant plant) {
+        this.plant = plant;
+    }
+
+    public EventType getEventType() {
+        return eventType;
+    }
+
+    public void setEventType(EventType eventType) {
+        this.eventType = eventType;
+    }
+
+    public LocalDate getLastWateredOn() {
+        return lastWateredOn;
+    }
+
+    public void setLastWateredOn(LocalDate lastWateredOn) {
+        this.lastWateredOn = lastWateredOn;
+    }
+
+    public LocalDate getNextOccurrence() {
+        return nextOccurrence;
     }
 
     @Override

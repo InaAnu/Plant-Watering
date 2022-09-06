@@ -15,7 +15,7 @@ public class Events {
 
     public ArrayList<Event> getUpcomingEvents (int amount) {
         ArrayList<Event> upcomingEvents = new ArrayList<>();
-        if(events.size() < amount){
+        if (events.size() < amount){
             amount = events.size();
         }
         for(int i=0; i<amount; i++) {
@@ -26,14 +26,23 @@ public class Events {
 
     public void addEvent(String plantScientificName, Event.EventType eventType, LocalDate lastWateredOn) {
 
-        Plant plant = dataSource.queryPlantByExactScientificName(plantScientificName); // TODO I need to figure out what will happen if there are several plants under the name;
+        Plant plant = dataSource.queryPlantByExactScientificName(plantScientificName);
+
+        if (plant == null) {
+            return;
+        }
+
         // TODO if such event already exists, do not add a new event
+        // Search events to see if this event already exists
+//        if ()
+
         Event event = new Event(plant, eventType, lastWateredOn);
         events.add(event);
     }
 
     public void addEvent(Plant plant, Event.EventType eventType, LocalDate lastWateredOn) {
         // TODO if such event already exists, do not add a new event
+        // TODO I need to figure out what will happen if there are several plants under the name;
         Event event = new Event(plant, eventType, lastWateredOn);
         events.add(event);
     }

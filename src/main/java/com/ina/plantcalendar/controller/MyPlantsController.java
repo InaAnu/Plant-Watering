@@ -2,6 +2,7 @@ package com.ina.plantcalendar.controller;
 
 import com.ina.plantcalendar.model.DataSource;
 import com.ina.plantcalendar.model.Plant;
+import com.ina.plantcalendar.services.FooterService;
 import com.ina.plantcalendar.services.MyPlantsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,10 @@ public class MyPlantsController {
             model.addAttribute("plant" + (i+1) + "_watering_pattern", dataSource.queryPlants().get(i).getWateringPatternText());
         }
         dataSource.close();
+
+        FooterService footerService = new FooterService();
+        footerService.fillFooterData(model);
+
         return "my-plants.html";
     }
 

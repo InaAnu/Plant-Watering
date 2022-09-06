@@ -22,13 +22,10 @@ License URL: http://creativecommons.org/licenses/by/3.0/
             </div>
             <div class="col-md-3 w3-agile-footer-grid">
                 <h3>Upcoming events</h3>
-                <ul>
-                    <li>12th Aug <a href="single.html">Curabitur</a></li>
-                    <li>10th Sept <a href="single.html">Fusce urna</a></li>
-                    <li>24th Sept <a href="single.html">Praesent</a></li>
-                    <li>17th Oct <a href="single.html">Malesuada </a></li>
-                    <li>09th Dec <a href="single.html">Cum sociis</a></li>
+                <ul th:each="event:${upcoming_events}">
+                    <li th:text="${event}"></li>
                 </ul>
+
             </div>
             <div class="col-md-3 w3-agile-footer-grid">
                 <h3>Navigation</h3>

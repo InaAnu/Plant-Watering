@@ -44,6 +44,10 @@ public class MainForTests {
 
         System.out.println("-----");
         System.out.println(dataSource.queryPlantByExactScientificName("Calathea Lancifolia"));
+
+        Event event = dataSource.queryExactEventTest("Calathea Lancifolia", Event.EventType.REPLANTING, LocalDate.of(2022, 9, 6));
+        System.out.println(event.getPlant().getScientificName() + " " + event.getEventType() + " " + event.getNextOccurrence().toString());
+
 //        System.out.println(dataSource.queryPlants().get(0).getScientificName());
 
 //        ArrayList<String> plantNames1 = new ArrayList<>();
@@ -87,6 +91,5 @@ public class MainForTests {
 //        System.out.println(event1.getDate());
 
     }
-
 
 }

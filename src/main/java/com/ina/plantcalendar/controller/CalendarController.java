@@ -5,13 +5,13 @@ package com.ina.plantcalendar.controller;
 import com.ina.plantcalendar.model.Event;
 import com.ina.plantcalendar.model.Events;
 import com.ina.plantcalendar.model.Plant;
+import com.ina.plantcalendar.services.FooterService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
-import java.time.Period;
 import java.util.ArrayList;
 
 @Controller
@@ -21,7 +21,7 @@ public class CalendarController {
     public String displayCalendar(Model model, @RequestParam(required = false, name = "upcoming_events") ArrayList<Event> upcomingEvents) {
 
 
-//        TODO Change this section to use the code from the database
+//        TODO Change this section to use the code from the database or from the Calendar Service
 
         Plant calathea = new Plant("Calathea Lancifolia", "Rattlesnake Plant", Plant.PlantType.CALATHEA, 7);
         Plant maranta = new Plant("Maranta Leuconeura", "Fascinator Tricolor", Plant.PlantType.MARANTA, 7);
@@ -41,6 +41,9 @@ public class CalendarController {
         upcomingEvents = events.getUpcomingEvents(6);
 
         model.addAttribute("upcoming_events", upcomingEvents);
+
+        FooterService footerService = new FooterService();
+        footerService.fillFooterData(model);
         return "calendar.html";
     }
 }

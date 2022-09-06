@@ -1,6 +1,7 @@
 package com.ina.plantcalendar.model;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +23,12 @@ public class DataSource {
     public static final String COLUMN_PLANT_INFO_TYPE = "type";
     public static final String COLUMN_PLANT_INFO_WATERING_RECURRENCE = "watering_recurrence";
 
+    public static final String TABLE_EVENTS = "events";
+    public static final String COLUMN_EVENT_ID = "_id";
+    public static final String COLUMN_EVENT_PLANT = "plant";
+    public static final String COLUMN_EVENT_TYPE = "type";
+    public static final String COLUMN_EVENT_DATE = "date";
+
     public static final String TABLE_PLANT_INFO_LIST_VIEW = "plant_list";
     public static final String CREATE_PLANT_INFO_LIST_VIEW = "CREATE VIEW IF NOT EXISTS " + TABLE_PLANT_INFO_LIST_VIEW + " AS " +
             "SELECT " + TABLE_PLANT_INFO + "." + COLUMN_PLANT_INFO_ID + ", " + TABLE_PLANT_INFO + "." + COLUMN_PLANT_INFO_SCIENTIFIC_NAME + ", " +
@@ -41,9 +48,20 @@ public class DataSource {
             " FROM " + TABLE_PLANT_INFO_LIST_VIEW +
             " WHERE " + COLUMN_PLANT_INFO_SCIENTIFIC_NAME + " = ?";
 
-    public static final String QUERY_PLANTS = "SELECT * FROM " + TABLE_PLANT_INFO_LIST_VIEW;
+    public static final String GET_ALL_PLANTS = "SELECT * FROM " + TABLE_PLANT_INFO_LIST_VIEW;
+
+    public static final String QUERY_EXACT_EVENT = "SELECT " + TABLE_EVENTS + "." + COLUMN_EVENT_PLANT + ", " + TABLE_EVENTS + "." + COLUMN_EVENT_TYPE + ", " +
+            TABLE_EVENTS + "." + COLUMN_EVENT_DATE +
+            " FROM " + TABLE_EVENTS +
+            " WHERE " + TABLE_EVENTS + "." + COLUMN_EVENT_PLANT + " LIKE ?" +
+            " AND " + TABLE_EVENTS + "." + COLUMN_EVENT_TYPE + " LIKE ?" +
+            " AND " + TABLE_EVENTS + "." + COLUMN_EVENT_DATE + " LIKE ?" +
+            " ORDER BY " + TABLE_EVENTS + "." + COLUMN_EVENT_PLANT + ", " + TABLE_EVENTS + "." + COLUMN_EVENT_TYPE + ", " +
+            TABLE_EVENTS + "." + COLUMN_EVENT_DATE;
+
     private PreparedStatement queryPlantByName;
     private PreparedStatement queryPlantByExactScientificName;
+    private PreparedStatement queryExactEvent;
 
     private Connection conn;
 
@@ -56,6 +74,7 @@ public class DataSource {
 //            System.out.println(QUERY_PLANT_BY_NAME);
             queryPlantByName = conn.prepareStatement(QUERY_PLANT_BY_NAME);
             queryPlantByExactScientificName = conn.prepareStatement(QUERY_PLANT_BY_EXACT_SCIENTIFIC_NAME);
+            queryExactEvent = conn.prepareStatement(QUERY_EXACT_EVENT);
             return true;
         } catch (SQLException e){
             System.out.println("Could not connect to database: " + e);
@@ -142,9 +161,9 @@ public class DataSource {
     }
 
     public List<Plant> queryPlants() {
-        System.out.println(QUERY_PLANTS);
+        System.out.println(GET_ALL_PLANTS);
         try(Statement statement = conn.createStatement();
-            ResultSet resultSet = statement.executeQuery(QUERY_PLANTS)) {
+            ResultSet resultSet = statement.executeQuery(GET_ALL_PLANTS)) {
             List<Plant> plants = new ArrayList<>();
             while(resultSet.next()) {
                 Plant plant = new Plant();
@@ -162,4 +181,67 @@ public class DataSource {
             return null;
         }
     }
+
+    public Event queryExactEvent (String scientificName, Event.EventType eventType, LocalDate date) {
+        System.out.println(QUERY_EXACT_EVENT);
+
+        // TODO I need to query a VIEW where the plant details are also in the table, rather than event, which will show only the number of the plant, from which we need to get further details.
+        try {
+            queryExactEvent.setString(1, scientificName); // TODO This is null, need to find out why
+            queryExactEvent.setString(2, eventType.toString());
+            queryExactEvent.setString(3, date.toString());
+            ResultSet resultSet = queryExactEvent.executeQuery();
+
+            Event event;
+
+                if(resultSet != null) {
+                    Plant plant = queryPlantByExactScientificName(scientificName);
+                    event = new Event(plant, eventType, date);
+                } else {
+                    event = new Event(null, null, null);
+                }
+                return event;
+
+        } catch (SQLException e) {
+            System.out.println("Querying exact event failed: " + e.getMessage());
+            return null;
+        }
+    }
+
+    public Event queryExactEventTest (String scientificName, Event.EventType eventType, LocalDate date) {
+        System.out.println(QUERY_EXACT_EVENT);
+
+        // TODO I need to query a VIEW where the plant details are also in the table, rather than event, which will show only the number of the plant, from which we need to get further details.
+        String forNow = scientificName;
+        try {
+            scientificName = "1";
+            queryExactEvent.setString(1, scientificName);
+            queryExactEvent.setString(2, eventType.toString());
+            queryExactEvent.setString(3, date.toString());
+            ResultSet resultSet = queryExactEvent.executeQuery();
+
+            Event event;
+
+            // TODO Resultset is not null at this point - I want to check if it's empty and I don't know how yet
+            if(resultSet != null) {
+                scientificName = forNow;
+                Plant plant = queryPlantByExactScientificName(scientificName);
+                event = new Event(plant, eventType, date);
+            } else {
+                event = new Event(null, null, null);
+            }
+            return event;
+
+        } catch (SQLException e) {
+            System.out.println("Querying exact event failed: " + e.getMessage());
+            return null;
+        }
+    }
+
+//    public boolean isEventInDB (String scientificName, Event.EventType eventType, LocalDate date) {
+//
+//        if (queryExactEvent(scientificName, eventType, date) == null) {
+//            // TODO I want to assure that when an event is passed it will be either true or false and I don't know yet how to tackle the issue if SQL exception has been thrown.
+//        }
+//    }
 }
