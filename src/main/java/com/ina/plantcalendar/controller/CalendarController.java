@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -18,7 +19,7 @@ import java.util.ArrayList;
 public class CalendarController {
 
     @RequestMapping(value = "/calendar")
-    public String displayCalendar(Model model, @RequestParam(required = false, name = "upcoming_events") ArrayList<Event> upcomingEvents) {
+    public String displayCalendar(Model model, @RequestParam(required = false, name = "upcoming_events") ArrayList<Event> upcomingEvents) throws SQLException {
 
 
 //        TODO Change this section to use the code from the database or from the Calendar Service

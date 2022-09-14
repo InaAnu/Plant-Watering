@@ -1,52 +1,61 @@
 package com.ina.plantcalendar.model;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainForTests {
-    public static void main(String[] args) {
-//        Event watering = new Event(Event.EventType.WATERING, LocalDate.now());
+    public static void main(String[] args) throws SQLException {
+
+//        DataSource dataSource = new DataSource();
 //
-//        System.out.println(watering);
-
-        DataSource dataSource = new DataSource();
-
-//        if(!dataSource.open()) {
-//            System.out.println("Can't open datasource");
-//            return;
-//        }
-        dataSource.open();
-//        dataSource.test();
+////        if(!dataSource.open()) {
+////            System.out.println("Can't open datasource");
+////            return;
+////        }
+//        dataSource.open();
+////        dataSource.test();
+////
+//        dataSource.createViewForPlantInfo();
+//        dataSource.createViewForFullEventInfo();
 //
-        dataSource.createViewForPlantInfo();
-
-//        List<Plant> plantsInfoByAlias = dataSource.queryPlantByName("au");
-//        if(plantsInfoByAlias == null) {
-//            System.out.println("No such plants!");
+////        List<Plant> plantsInfoByAlias = dataSource.queryPlantByName("au");
+////        if(plantsInfoByAlias == null) {
+////            System.out.println("No such plants!");
+////            return;
+////        } else {
+////            for (Plant plant : plantsInfoByAlias) {
+////                System.out.println("Scientific name: " + plant.getScientificName() + "\nAlias: " + plant.getAlias() + "\nType: " + plant.getType() + "\nWatering pattern: " + plant.getWateringPattern());
+////            }
+////        }
+//
+//        List<Plant> plants = dataSource.queryPlants();
+//        if(plants == null) {
+//            System.out.println("No plants available!");
 //            return;
 //        } else {
-//            for (Plant plant : plantsInfoByAlias) {
-//                System.out.println("Scientific name: " + plant.getScientificName() + "\nAlias: " + plant.getAlias() + "\nType: " + plant.getType() + "\nWatering pattern: " + plant.getWateringPattern());
+//            for (Plant plant : plants) {
+//                System.out.println("Scientific name: " + plant.getScientificName() + " Alias: " + plant.getAlias() + " Type: " + plant.getType() + " Watering pattern: " + plant.getWateringPatternText());
 //            }
 //        }
+//
+//        System.out.println("-----");
+//        System.out.println(dataSource.queryPlantByExactScientificName("Calathea Lancifolia"));
+//
+//        boolean isEventInDB = dataSource.isEventInDB("Calathea Lancifolia", Event.EventType.WATERING);
+//        if(isEventInDB) {
+//            System.out.println("Event is in DB");
+//        } else {
+//            System.out.println("The event was not found");
+//        }
 
-        List<Plant> plants = dataSource.queryPlants();
-        if(plants == null) {
-            System.out.println("No plants available!");
-            return;
-        } else {
-            for (Plant plant : plants) {
-                System.out.println("Scientific name: " + plant.getScientificName() + " Alias: " + plant.getAlias() + " Type: " + plant.getType() + " Watering pattern: " + plant.getWateringPatternText());
-            }
-        }
+        Events events = new Events();
+        events.addEvent("Maranta Leuconeura", Event.EventType.WATERING, LocalDate.now());
 
-        System.out.println("-----");
-        System.out.println(dataSource.queryPlantByExactScientificName("Calathea Lancifolia"));
-
-        Event event = dataSource.queryExactEventTest("Calathea Lancifolia", Event.EventType.REPLANTING, LocalDate.of(2022, 9, 6));
-        System.out.println(event.getPlant().getScientificName() + " " + event.getEventType() + " " + event.getNextOccurrence().toString());
+        Events events1 = new Events();
+        events1.addEvent("Ocimum Basilicum", Event.EventType.WATERING, LocalDate.now());
 
 //        System.out.println(dataSource.queryPlants().get(0).getScientificName());
 

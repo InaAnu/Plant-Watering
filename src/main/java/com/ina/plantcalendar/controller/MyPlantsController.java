@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
+import java.sql.SQLException;
 
 @Slf4j
 @Controller
@@ -28,7 +29,7 @@ public class MyPlantsController {
     }
 
     @RequestMapping(value={"/myplants"})
-    public String displayMyPlantsPage(@RequestParam(required = false, name = "add_plant") boolean addPlant, Model model) {
+    public String displayMyPlantsPage(@RequestParam(required = false, name = "add_plant") boolean addPlant, Model model) throws SQLException {
         model.addAttribute("add_plant", addPlant);
         model.addAttribute("plant", new Plant("Calathea Lancifolia", "Rattlesnake plant", Plant.PlantType.CALATHEA, 7));
 

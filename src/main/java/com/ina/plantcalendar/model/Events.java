@@ -2,6 +2,7 @@ package com.ina.plantcalendar.model;
 
 import com.fasterxml.jackson.databind.DatabindException;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
@@ -12,6 +13,11 @@ public class Events {
     private ArrayList<Event> events = new ArrayList<>();
     private DataSource dataSource = new DataSource();
     private LocalDate today = LocalDate.now();
+
+
+    public Events() throws SQLException {
+        dataSource.open();
+    }
 
     public ArrayList<Event> getUpcomingEvents (int amount) {
         ArrayList<Event> upcomingEvents = new ArrayList<>();
@@ -24,20 +30,21 @@ public class Events {
         return upcomingEvents;
     }
 
-    public void addEvent(String plantScientificName, Event.EventType eventType, LocalDate lastWateredOn) {
+    public void addEvent(String plantScientificName, Event.EventType eventType, LocalDate lastWateredOn) throws SQLException {
 
         Plant plant = dataSource.queryPlantByExactScientificName(plantScientificName);
 
         if (plant == null) {
+            System.out.println("Plant not in the DB.");
             return;
         }
 
-        // TODO if such event already exists, do not add a new event
-        // Search events to see if this event already exists
-//        if ()
-
-        Event event = new Event(plant, eventType, lastWateredOn);
-        events.add(event);
+        if (dataSource.isEventInDB(plantScientificName, eventType)) {
+            return;
+        } else {
+            Event event = new Event(plant, eventType, lastWateredOn);
+            dataSource.addEvent(dataSource.queryPlantIdByScientificName(plant.getScientificName()), eventType, lastWateredOn, event.getNextOccurrence());
+        }
     }
 
     public void addEvent(Plant plant, Event.EventType eventType, LocalDate lastWateredOn) {

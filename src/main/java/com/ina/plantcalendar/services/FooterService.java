@@ -5,6 +5,7 @@ import com.ina.plantcalendar.model.Events;
 import com.ina.plantcalendar.model.Plant;
 import org.springframework.ui.Model;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -22,6 +23,9 @@ public class FooterService {
     Plant tundraTornado = new Plant("Sedum Makinoi", "Tundra Tornado", Plant.PlantType.SUCCULENT, 14);
 
     Events events = new Events();
+
+    public FooterService() throws SQLException {
+    }
 
     public void fillFooterData(Model model) {
         events.addEvent(calathea, Event.EventType.WATERING, LocalDate.now().minusDays(6));
