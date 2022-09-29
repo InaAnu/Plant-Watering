@@ -9,19 +9,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.sql.SQLException;
 
 @Controller
-public class HomeController {
+public class PlantPageController {
 
     private final FooterService footerService;
 
-    public HomeController(FooterService footerService) {
+    public PlantPageController(FooterService footerService) {
         this.footerService = footerService;
     }
 
-    @RequestMapping(value={"/","/home",""})
-    public String displayHomePage(Model model) throws SQLException {
+    @RequestMapping(value={"/plant-page"})
+    public String displayPlantPage (Model model) throws SQLException {
 
         footerService.fillFooterData(model);
 
-        return "home.html";
+        return "plant-page.html";
     }
 }

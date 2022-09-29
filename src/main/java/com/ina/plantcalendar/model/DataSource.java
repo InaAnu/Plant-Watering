@@ -1,10 +1,17 @@
 package com.ina.plantcalendar.model;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
+@Scope(BeanDefinition.SCOPE_SINGLETON)
 public class DataSource {
 
     // TODO Make a way to add plants to the database
@@ -88,25 +95,21 @@ public class DataSource {
     private PreparedStatement queryPlantIdByScientificName;
     private PreparedStatement addEvent;
 
-    private Connection conn;
+    private final Connection conn;
 
+    // TODO If I have a connection already open I don't want to open another one, but in this case Datasource is singleton so for now it should work
     // TODO Check what will happen if I cannot connect to the database and make a workaround for that
-
-    public boolean open() throws SQLException {
+    @Autowired
+    public DataSource() throws SQLException {
         try {
-            conn = DriverManager.getConnection(CONNECTION_STRING);
-            queryPlantByName = conn.prepareStatement(QUERY_PLANT_BY_NAME);
-            queryPlantByExactScientificName = conn.prepareStatement(QUERY_PLANT_BY_EXACT_SCIENTIFIC_NAME);
-            queryIfEventExists = conn.prepareStatement(QUERY_IF_EVENT_EXISTS);
-            queryPlantIdByScientificName = conn.prepareStatement(QUERY_PLANT_ID_BY_SCIENTIFIC_NAME);
-            addEvent = conn.prepareStatement(ADD_EVENT);
-            return true;
-        } catch (SQLException e){
+            this.conn = DriverManager.getConnection(CONNECTION_STRING);
+        } catch (SQLException e) {
             System.out.println("Could not connect to database: " + e);
             throw e;
         }
     }
 
+    // TODO investigate when I should be closing the connection!!!
     public void close() {
         try {
             if (conn != null) {
@@ -157,6 +160,7 @@ public class DataSource {
     public List<Plant> queryPlantByName(String name) throws SQLException {
 
         try {
+            queryPlantByName = conn.prepareStatement(QUERY_PLANT_BY_NAME);
             queryPlantByName.setString(1, "%" + name + "%");
             queryPlantByName.setString(2, "%" + name + "%");
             ResultSet resultSet = queryPlantByName.executeQuery();
@@ -180,6 +184,7 @@ public class DataSource {
     public Plant queryPlantByExactScientificName(String exactScientificName) throws SQLException {
 
         try {
+            queryPlantByExactScientificName = conn.prepareStatement(QUERY_PLANT_BY_EXACT_SCIENTIFIC_NAME);
             queryPlantByExactScientificName.setString(1, exactScientificName);
             ResultSet resultSet = queryPlantByExactScientificName.executeQuery();
 
@@ -221,6 +226,7 @@ public class DataSource {
     public int queryPlantIdByScientificName (String scientificName) throws SQLException{
 
         try {
+            queryPlantIdByScientificName = conn.prepareStatement(QUERY_PLANT_ID_BY_SCIENTIFIC_NAME);
             queryPlantIdByScientificName.setString(1, scientificName);
             ResultSet resultSet = queryPlantIdByScientificName.executeQuery();
 
@@ -234,6 +240,8 @@ public class DataSource {
     public boolean isEventInDB (String scientificName, Event.EventType eventType) throws SQLException {
 
         try {
+            queryIfEventExists = conn.prepareStatement(QUERY_IF_EVENT_EXISTS);
+            queryPlantIdByScientificName = conn.prepareStatement(QUERY_PLANT_ID_BY_SCIENTIFIC_NAME);
             queryIfEventExists.setInt(1, queryPlantIdByScientificName(scientificName));
             queryIfEventExists.setString(2, eventType.toString());
             ResultSet resultSet = queryIfEventExists.executeQuery();
@@ -254,6 +262,7 @@ public class DataSource {
     public boolean addEvent (int plantId, Event.EventType eventType, LocalDate lastWateredOn, LocalDate eventDate) throws SQLException {
 
         try {
+            addEvent = conn.prepareStatement(ADD_EVENT);
             addEvent.setInt(1, plantId);
             addEvent.setString(2, eventType.toString());
             addEvent.setString(3, lastWateredOn.toString());

@@ -9,14 +9,11 @@ import java.util.List;
 public class MainForTests {
     public static void main(String[] args) throws SQLException {
 
-//        DataSource dataSource = new DataSource();
-//
-////        if(!dataSource.open()) {
-////            System.out.println("Can't open datasource");
-////            return;
-////        }
-//        dataSource.open();
-////        dataSource.test();
+        DataSource dataSource = new DataSource();
+
+
+
+//        dataSource.test();
 ////
 //        dataSource.createViewForPlantInfo();
 //        dataSource.createViewForFullEventInfo();
@@ -51,12 +48,13 @@ public class MainForTests {
 //            System.out.println("The event was not found");
 //        }
 
-        Events events = new Events();
-        events.addEvent("Maranta Leuconeura", Event.EventType.WATERING, LocalDate.now());
+        Events events = new Events(dataSource);
+        events.addEvent("Parthenocissus Striata", Event.EventType.WATERING, LocalDate.now());
 
-        Events events1 = new Events();
-        events1.addEvent("Ocimum Basilicum", Event.EventType.WATERING, LocalDate.now());
+        Events events1 = new Events(dataSource);
+        events1.addEvent("Sedum Makinoi", Event.EventType.WATERING, LocalDate.now());
 
+       
 //        System.out.println(dataSource.queryPlants().get(0).getScientificName());
 
 //        ArrayList<String> plantNames1 = new ArrayList<>();

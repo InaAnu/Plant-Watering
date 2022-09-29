@@ -7,7 +7,7 @@ public class AggregatedEventsPerDay {
 
     private LocalDate date;
     private Event.EventType eventType;
-    DataSource dataSource = new DataSource();
+
 
     private ArrayList<String> plantsForTheEvent = new ArrayList<>();
 

@@ -104,6 +104,9 @@ License URL: http://creativecommons.org/licenses/by/3.0/
     <div class="container">
         <div class="gallery-grids">
             <div class="col-md-4 gallery-grid">
+                <a th:href="@{/plant-page}">
+                    <span class="link-spanner"></span>
+                </a>
                 <div class="grid">
                     <figure class="effect-roxy">
                         <a class="example-image-link" href="images/CalatheaLancifolia.jpg" data-lightbox="example-set" data-title="">
@@ -121,7 +124,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                 <div class="grid">
                     <figure class="effect-roxy">
                         <a class="example-image-link" href="images/MarantaLeuconeura.jpg" data-lightbox="example-set" data-title="">
-                            <img src="images/MarantaLeuconeura.jpg" alt="" />
+                            <img src="images/MarantaLeuconeura.jpg" alt="">
                             <figcaption>
                                 <h3 th:text = "${plant2_name}"></h3>
                                 <h3><b th:text = "${plant2_alias}"></b></h3>

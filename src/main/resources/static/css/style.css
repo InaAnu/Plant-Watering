@@ -18,6 +18,18 @@ html, body{
 body{
 	background:#FFFFFF;
 }
+
+/*-- personal tweaks --*/
+.link-spanner{
+  position:absolute;
+  width:100%;
+  height:100%;
+  top:0;
+  left: 0;
+  z-index: 1;
+}
+/*-- //personal tweaks --*/
+
 /*-- banner-top --*/
 .w3layouts-banner-top{
     background: url(../images/SedumMakinoi.jpg) no-repeat 0px 0px;

@@ -22,10 +22,14 @@ import java.sql.SQLException;
 public class MyPlantsController {
 
     private final MyPlantsService myPlantsService;
+    private final DataSource dataSource;
+    private final FooterService footerService;
 
     @Autowired
-    public MyPlantsController(MyPlantsService myPlantsService) {
+    public MyPlantsController(MyPlantsService myPlantsService, DataSource dataSource, FooterService footerService) {
         this.myPlantsService = myPlantsService;
+        this.dataSource = dataSource;
+        this.footerService = footerService;
     }
 
     @RequestMapping(value={"/myplants"})
@@ -34,16 +38,13 @@ public class MyPlantsController {
         model.addAttribute("plant", new Plant("Calathea Lancifolia", "Rattlesnake plant", Plant.PlantType.CALATHEA, 7));
 
         // Plants in the gallery
-        DataSource dataSource = new DataSource();
-        dataSource.open();
+
         for (int i=0; i<6; i++) {
             model.addAttribute("plant" + (i+1) + "_name", dataSource.queryPlants().get(i).getScientificName());
             model.addAttribute("plant" + (i+1) + "_alias", dataSource.queryPlants().get(i).getAlias());
             model.addAttribute("plant" + (i+1) + "_watering_pattern", dataSource.queryPlants().get(i).getWateringPatternText());
         }
-        dataSource.close();
 
-        FooterService footerService = new FooterService();
         footerService.fillFooterData(model);
 
         return "my-plants.html";

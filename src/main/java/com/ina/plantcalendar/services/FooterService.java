@@ -3,13 +3,25 @@ package com.ina.plantcalendar.services;
 import com.ina.plantcalendar.model.Event;
 import com.ina.plantcalendar.model.Events;
 import com.ina.plantcalendar.model.Plant;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
+
+@Service
 public class FooterService {
+
+    private final Events events;
+
+    @Autowired
+    public FooterService(Events events) {
+        this.events = events;
+    }
 
     //        TODO Change this section to use the code from the database
 
@@ -21,11 +33,6 @@ public class FooterService {
     Plant basil = new Plant("Ocium Basilicum", "Basil", Plant.PlantType.HERB, 1);
     Plant veronaVein = new Plant("Parthenocissum Striata", "Verona Vein", Plant.PlantType.CLIMBER, 7);
     Plant tundraTornado = new Plant("Sedum Makinoi", "Tundra Tornado", Plant.PlantType.SUCCULENT, 14);
-
-    Events events = new Events();
-
-    public FooterService() throws SQLException {
-    }
 
     public void fillFooterData(Model model) {
         events.addEvent(calathea, Event.EventType.WATERING, LocalDate.now().minusDays(6));
