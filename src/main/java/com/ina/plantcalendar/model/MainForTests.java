@@ -47,12 +47,12 @@ public class MainForTests {
 //        } else {
 //            System.out.println("The event was not found");
 //        }
-
+//
         Events events = new Events(dataSource);
-        events.addRecurringEvent("Ocimum Basilicum", Event.EventType.WATERING, LocalDate.now());
+        events.addRecurringEvent("Ocimum Basilicum", Event.EventType.WATERING, LocalDate.now().plusDays(5));
 
         Events events1 = new Events(dataSource);
-        events1.addRecurringEvent("Sedum Makinoi", Event.EventType.WATERING, LocalDate.now());
+        events1.addRecurringEvent("Sedum Makinoi", Event.EventType.WATERING, LocalDate.now().minusDays(3));
 
 //        Events events2 = new Events(dataSource);
 //        events2.addRecurringEvent("Calathea Lancifolia", Event.EventType.WATERING, LocalDate.now());
