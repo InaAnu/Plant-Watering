@@ -35,7 +35,8 @@ public class DataSource {
     public static final String COLUMN_EVENT_PLANT = "plant";
     public static final String COLUMN_EVENT_TYPE = "type";
     public static final String COLUMN_EVENT_LAST_WATERED_ON = "last_watered_on";
-    public static final String COLUMN_EVENT_DATE = "date";
+    public static final String COLUMN_EVENT_START_DATE = "start_date";
+    public static final String COLUMN_EVENT_END_DATE = "end_date";
 
     public static final String TABLE_PLANT_INFO_LIST_VIEW = "plant_list";
     public static final String CREATE_PLANT_INFO_LIST_VIEW = "CREATE VIEW IF NOT EXISTS " + TABLE_PLANT_INFO_LIST_VIEW + " AS " +
@@ -54,7 +55,7 @@ public class DataSource {
             TABLE_PLANT_ALIASES + "." + COLUMN_PLANT_ALIASES_ALIAS + ", " + TABLE_PLANT_INFO + "." + COLUMN_PLANT_INFO_TYPE + " AS plant_type" + ", " +
             TABLE_PLANT_INFO + "." + COLUMN_PLANT_INFO_WATERING_RECURRENCE + ", " +
             TABLE_EVENTS + "." + COLUMN_EVENT_TYPE + " AS event_type" + ", " + TABLE_EVENTS + "." + COLUMN_EVENT_LAST_WATERED_ON + ", "
-            + TABLE_EVENTS + "." + COLUMN_EVENT_DATE +
+            + TABLE_EVENTS + "." + COLUMN_EVENT_START_DATE + ", " + TABLE_EVENTS + "." + COLUMN_EVENT_END_DATE +
             " FROM " + TABLE_PLANT_INFO +
             " INNER JOIN " + TABLE_PLANT_ALIASES +
             " ON " + TABLE_PLANT_INFO + "." + COLUMN_PLANT_INFO_ID + " = " + TABLE_PLANT_ALIASES + "." + COLUMN_PLANT_ALIASES_SCIENTIFIC_NAME +
@@ -63,7 +64,8 @@ public class DataSource {
             " ORDER BY " + TABLE_EVENTS + "." + COLUMN_EVENT_ID + ", " + TABLE_PLANT_INFO + "." + COLUMN_PLANT_INFO_SCIENTIFIC_NAME + ", " +
             TABLE_PLANT_ALIASES + "." + COLUMN_PLANT_ALIASES_ALIAS + ", " + TABLE_PLANT_INFO + "." + COLUMN_PLANT_INFO_TYPE + ", " +
             TABLE_PLANT_INFO + "." + COLUMN_PLANT_INFO_WATERING_RECURRENCE + ", " + TABLE_EVENTS + "." + COLUMN_EVENT_TYPE + ", " +
-            TABLE_EVENTS + "." + COLUMN_EVENT_LAST_WATERED_ON + ", " + TABLE_EVENTS + "." + COLUMN_EVENT_DATE;
+            TABLE_EVENTS + "." + COLUMN_EVENT_LAST_WATERED_ON + ", " + TABLE_EVENTS + "." + COLUMN_EVENT_START_DATE + ", " +
+            TABLE_EVENTS + "." + COLUMN_EVENT_END_DATE;
 
     public static final String QUERY_PLANT_BY_NAME = "SELECT *" +
             " FROM " + TABLE_PLANT_INFO_LIST_VIEW +
@@ -75,26 +77,29 @@ public class DataSource {
 
     public static final String GET_ALL_PLANTS = "SELECT * FROM " + TABLE_PLANT_INFO_LIST_VIEW;
 
-    public static final String QUERY_IF_EVENT_EXISTS = "SELECT " + TABLE_EVENTS + "." + COLUMN_EVENT_PLANT + ", " + TABLE_EVENTS + "." + COLUMN_EVENT_TYPE + ", " + TABLE_EVENTS + "." + COLUMN_EVENT_DATE +
+    public static final String QUERY_IF_EVENT_EXISTS = "SELECT " + TABLE_EVENTS + "." + COLUMN_EVENT_PLANT + ", " + TABLE_EVENTS + "." + COLUMN_EVENT_TYPE +
             " FROM " + TABLE_EVENTS +
             " WHERE " + TABLE_EVENTS + "." + COLUMN_EVENT_PLANT + " LIKE ?" +
             " AND " + TABLE_EVENTS + "." + COLUMN_EVENT_TYPE + " LIKE ?" +
-            " AND " + TABLE_EVENTS + "." + COLUMN_EVENT_DATE + " BETWEEN ? AND ?" +
-            " ORDER BY " + TABLE_EVENTS + "." + COLUMN_EVENT_PLANT + ", " + TABLE_EVENTS + "." + COLUMN_EVENT_TYPE + ", " + TABLE_EVENTS + "." + COLUMN_EVENT_DATE;
+            " ORDER BY " + TABLE_EVENTS + "." + COLUMN_EVENT_PLANT + ", " + TABLE_EVENTS + "." + COLUMN_EVENT_TYPE;
 
     public static final String QUERY_PLANT_ID_BY_SCIENTIFIC_NAME = "SELECT " + TABLE_PLANT_INFO + "." + COLUMN_PLANT_INFO_ID +
             " FROM " + TABLE_PLANT_INFO +
             " WHERE " + TABLE_PLANT_INFO + "." + COLUMN_PLANT_INFO_SCIENTIFIC_NAME + " = ?";
 
-    public static final String ADD_EVENT = "INSERT INTO " + TABLE_EVENTS +
-            " (" + COLUMN_EVENT_PLANT + ", " + COLUMN_EVENT_TYPE + ", " + COLUMN_EVENT_LAST_WATERED_ON + ", " + COLUMN_EVENT_DATE + ")" +
-            " VALUES (?, ?, ?, ?)";
+    public static final String ADD_RECURRING_EVENT_WITH_END_DATE = "INSERT INTO " + TABLE_EVENTS +
+            " (" + COLUMN_EVENT_PLANT + ", " + COLUMN_EVENT_TYPE + ", " + COLUMN_EVENT_LAST_WATERED_ON + ", " + COLUMN_EVENT_START_DATE + ", " + COLUMN_EVENT_END_DATE + ")" +
+            " VALUES (?, ?, ?, ?, ?)";
+
+    public static final String ADD_RECURRING_EVENT_WITHOUT_END_DATE = "INSERT INTO " + TABLE_EVENTS +
+            " (" + COLUMN_EVENT_PLANT + ", " + COLUMN_EVENT_TYPE + ", " + COLUMN_EVENT_LAST_WATERED_ON + ", " + COLUMN_EVENT_START_DATE + ", " + COLUMN_EVENT_END_DATE + ")" +
+            " VALUES (?, ?, ?, ?, ?)";
 
     private PreparedStatement queryPlantByName;
     private PreparedStatement queryPlantByExactScientificName;
     private PreparedStatement queryIfEventExists;
     private PreparedStatement queryPlantIdByScientificName;
-    private PreparedStatement addEvent;
+    private PreparedStatement addRecurringEvent;
 
     private final Connection conn;
 
@@ -238,18 +243,13 @@ public class DataSource {
         }
     }
 
-    public boolean isEventInDB (String scientificName, Event.EventType eventType, LocalDate eventDate) throws SQLException {
+    public boolean isEventInDB (String scientificName, Event.EventType eventType) throws SQLException {
 
         try {
-            Plant plant = queryPlantByExactScientificName(scientificName);
-            int wateringRecurrence = plant.getWateringRecurrence();
-
             queryIfEventExists = conn.prepareStatement(QUERY_IF_EVENT_EXISTS);
             queryPlantIdByScientificName = conn.prepareStatement(QUERY_PLANT_ID_BY_SCIENTIFIC_NAME);
             queryIfEventExists.setInt(1, queryPlantIdByScientificName(scientificName));
             queryIfEventExists.setString(2, eventType.toString());
-            queryIfEventExists.setString(3, eventDate.minusDays(wateringRecurrence).toString());
-            queryIfEventExists.setString(4, eventDate.plusDays(wateringRecurrence).toString());
             ResultSet resultSet = queryIfEventExists.executeQuery();
 
                 if(resultSet.isBeforeFirst()) {
@@ -265,19 +265,37 @@ public class DataSource {
         }
     }
 
-    public boolean addEvent (int plantId, Event.EventType eventType, LocalDate lastWateredOn, LocalDate eventDate) throws SQLException {
+    public boolean addRecurringEvent(int plantId, Event.EventType eventType, LocalDate lastWateredOn, LocalDate startDate, LocalDate endDate) throws SQLException {
 
         try {
-            addEvent = conn.prepareStatement(ADD_EVENT);
-            addEvent.setInt(1, plantId);
-            addEvent.setString(2, eventType.toString());
-            addEvent.setString(3, lastWateredOn.toString());
-            addEvent.setString(4, eventDate.toString());
+            addRecurringEvent = conn.prepareStatement(ADD_RECURRING_EVENT_WITH_END_DATE);
+            addRecurringEvent.setInt(1, plantId);
+            addRecurringEvent.setString(2, eventType.toString());
+            addRecurringEvent.setString(3, lastWateredOn.toString());
+            addRecurringEvent.setString(4, startDate.toString());
+            addRecurringEvent.setString(5, endDate.toString());
 
-            addEvent.executeUpdate();
+
+            addRecurringEvent.executeUpdate();
             return true;
         } catch (SQLException e) {
-            System.out.println(ADD_EVENT);
+            System.out.println("Adding new event to the database failed: " + e.getMessage());
+            throw new SQLException("Adding new event to the database failed: " + e.getMessage(), e);
+        }
+    }
+
+    public boolean addRecurringEvent(int plantId, Event.EventType eventType, LocalDate lastWateredOn, LocalDate startDate) throws SQLException {
+
+        try {
+            addRecurringEvent = conn.prepareStatement(ADD_RECURRING_EVENT_WITHOUT_END_DATE);
+            addRecurringEvent.setInt(1, plantId);
+            addRecurringEvent.setString(2, eventType.toString());
+            addRecurringEvent.setString(3, lastWateredOn.toString());
+            addRecurringEvent.setString(4, startDate.toString());
+
+            addRecurringEvent.executeUpdate();
+            return true;
+        } catch (SQLException e) {
             System.out.println("Adding new event to the database failed: " + e.getMessage());
             throw new SQLException("Adding new event to the database failed: " + e.getMessage(), e);
         }

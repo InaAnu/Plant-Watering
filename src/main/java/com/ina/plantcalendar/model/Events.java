@@ -1,12 +1,10 @@
 package com.ina.plantcalendar.model;
 
-import com.fasterxml.jackson.databind.DatabindException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.time.Period;
 import java.util.ArrayList;
 
 @Component
@@ -33,7 +31,7 @@ public class Events {
     }
 
     // TODO I need to figure out what will happen if there are several plants under the name;
-    public void addEvent(String plantScientificName, Event.EventType eventType, LocalDate lastWateredOn) throws SQLException {
+    public void addRecurringEvent(String plantScientificName, Event.EventType eventType, LocalDate lastWateredOn, LocalDate endDate) throws SQLException {
         Plant plant = dataSource.queryPlantByExactScientificName(plantScientificName);
 
         if (plant == null) {
@@ -41,17 +39,16 @@ public class Events {
             return;
         }
 
-        if (dataSource.isEventInDB(plantScientificName, eventType, lastWateredOn.plusDays(plant.getWateringRecurrence()))) {
+        if (dataSource.isEventInDB(plantScientificName, eventType)) {
             return;
         } else {
             Event event = new Event(plant, eventType, lastWateredOn);
-            dataSource.addEvent(dataSource.queryPlantIdByScientificName(plant.getScientificName()), eventType, lastWateredOn, event.getNextOccurrence());
+            dataSource.addRecurringEvent(dataSource.queryPlantIdByScientificName(plant.getScientificName()), eventType, lastWateredOn, event.getEventDate(), endDate);
         }
 
         // TODO Add logic for changing the event
     }
 
-    // TODO I need to figure out what will happen if there are several plants under the name;
     public void addRecurringEvent(String plantScientificName, Event.EventType eventType, LocalDate lastWateredOn) throws SQLException {
         Plant plant = dataSource.queryPlantByExactScientificName(plantScientificName);
 
@@ -60,22 +57,18 @@ public class Events {
             return;
         }
 
-        if (dataSource.isEventInDB(plantScientificName, eventType, lastWateredOn.plusDays(plant.getWateringRecurrence()))) {
+        if (dataSource.isEventInDB(plantScientificName, eventType)) {
             return;
         } else {
-            LocalDate timeFrame = LocalDate.now().plusDays(29);
-            LocalDate nextEventDate = lastWateredOn.plusDays(plant.getWateringRecurrence());
-            while(nextEventDate.isBefore(timeFrame)) {
-                Event event = new Event(plant, eventType, lastWateredOn);
-                dataSource.addEvent(dataSource.queryPlantIdByScientificName(plant.getScientificName()), eventType, lastWateredOn, nextEventDate);
-                lastWateredOn = nextEventDate;
-                nextEventDate = lastWateredOn.plusDays(plant.getWateringRecurrence());
-            }
+            Event event = new Event(plant, eventType, lastWateredOn);
+            dataSource.addRecurringEvent(dataSource.queryPlantIdByScientificName(plant.getScientificName()), eventType, lastWateredOn, event.getEventDate());
         }
+
+        // TODO Add logic for changing the event
     }
 
     // TODO Get rid of this and connect everything to DB
-    public void addEvent(Plant plant, Event.EventType eventType, LocalDate lastWateredOn) {
+    public void addRecurringEventTest(Plant plant, Event.EventType eventType, LocalDate lastWateredOn) {
         Event event = new Event(plant, eventType, lastWateredOn);
         events.add(event);
     }

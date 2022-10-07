@@ -2,13 +2,10 @@ package com.ina.plantcalendar.controller;
 
 //import com.ina.plantcalendar.model.Event;
 //import com.ina.plantcalendar.model.Events;
-import com.ina.plantcalendar.PlantWateringApplication;
-import com.ina.plantcalendar.model.DataSource;
 import com.ina.plantcalendar.model.Event;
 import com.ina.plantcalendar.model.Events;
 import com.ina.plantcalendar.model.Plant;
 import com.ina.plantcalendar.services.FooterService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,12 +36,12 @@ public class CalendarController {
         Plant veronaVein = new Plant("Parthenocissum Striata", "Verona Vein", Plant.PlantType.CLIMBER, 7);
         Plant tundraTornado = new Plant("Sedum Makinoi", "Tundra Tornado", Plant.PlantType.SUCCULENT, 14);
 
-        events.addEvent(calathea, Event.EventType.WATERING, LocalDate.now().minusDays(6));
-        events.addEvent(maranta, Event.EventType.WATERING, LocalDate.now().minusDays(5));
-        events.addEvent(tundraTornado, Event.EventType.WATERING, LocalDate.now().minusDays(7));
-        events.addEvent(basil, Event.EventType.WATERING, LocalDate.now().minusDays(1));
-        events.addEvent(veronaVein, Event.EventType.WATERING, LocalDate.now().minusDays(3));
-        events.addEvent(goldenPhotos, Event.EventType.WATERING,LocalDate.now().minusDays(4));
+        events.addRecurringEventTest(calathea, Event.EventType.WATERING, LocalDate.now().minusDays(6));
+        events.addRecurringEventTest(maranta, Event.EventType.WATERING, LocalDate.now().minusDays(5));
+        events.addRecurringEventTest(tundraTornado, Event.EventType.WATERING, LocalDate.now().minusDays(7));
+        events.addRecurringEventTest(basil, Event.EventType.WATERING, LocalDate.now().minusDays(1));
+        events.addRecurringEventTest(veronaVein, Event.EventType.WATERING, LocalDate.now().minusDays(3));
+        events.addRecurringEventTest(goldenPhotos, Event.EventType.WATERING,LocalDate.now().minusDays(4));
 
         upcomingEvents = events.getUpcomingEvents(6);
 
