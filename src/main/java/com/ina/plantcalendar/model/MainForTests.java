@@ -49,12 +49,13 @@ public class MainForTests {
 //        }
 
         Events events = new Events(dataSource);
-        events.addEvent("Parthenocissus Striata", Event.EventType.WATERING, LocalDate.now());
+        events.addRecurringEvent("Ocimum Basilicum", Event.EventType.WATERING, LocalDate.now());
 
         Events events1 = new Events(dataSource);
-        events1.addEvent("Sedum Makinoi", Event.EventType.WATERING, LocalDate.now());
+        events1.addRecurringEvent("Sedum Makinoi", Event.EventType.WATERING, LocalDate.now());
 
-       
+//        Events events2 = new Events(dataSource);
+//        events2.addRecurringEvent("Calathea Lancifolia", Event.EventType.WATERING, LocalDate.now());
 //        System.out.println(dataSource.queryPlants().get(0).getScientificName());
 
 //        ArrayList<String> plantNames1 = new ArrayList<>();

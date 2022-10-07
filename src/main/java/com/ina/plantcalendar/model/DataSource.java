@@ -75,11 +75,12 @@ public class DataSource {
 
     public static final String GET_ALL_PLANTS = "SELECT * FROM " + TABLE_PLANT_INFO_LIST_VIEW;
 
-    public static final String QUERY_IF_EVENT_EXISTS = "SELECT " + TABLE_EVENTS + "." + COLUMN_EVENT_PLANT + ", " + TABLE_EVENTS + "." + COLUMN_EVENT_TYPE +
+    public static final String QUERY_IF_EVENT_EXISTS = "SELECT " + TABLE_EVENTS + "." + COLUMN_EVENT_PLANT + ", " + TABLE_EVENTS + "." + COLUMN_EVENT_TYPE + ", " + TABLE_EVENTS + "." + COLUMN_EVENT_DATE +
             " FROM " + TABLE_EVENTS +
             " WHERE " + TABLE_EVENTS + "." + COLUMN_EVENT_PLANT + " LIKE ?" +
             " AND " + TABLE_EVENTS + "." + COLUMN_EVENT_TYPE + " LIKE ?" +
-            " ORDER BY " + TABLE_EVENTS + "." + COLUMN_EVENT_PLANT + ", " + TABLE_EVENTS + "." + COLUMN_EVENT_TYPE;
+            " AND " + TABLE_EVENTS + "." + COLUMN_EVENT_DATE + " BETWEEN ? AND ?" +
+            " ORDER BY " + TABLE_EVENTS + "." + COLUMN_EVENT_PLANT + ", " + TABLE_EVENTS + "." + COLUMN_EVENT_TYPE + ", " + TABLE_EVENTS + "." + COLUMN_EVENT_DATE;
 
     public static final String QUERY_PLANT_ID_BY_SCIENTIFIC_NAME = "SELECT " + TABLE_PLANT_INFO + "." + COLUMN_PLANT_INFO_ID +
             " FROM " + TABLE_PLANT_INFO +
@@ -87,7 +88,7 @@ public class DataSource {
 
     public static final String ADD_EVENT = "INSERT INTO " + TABLE_EVENTS +
             " (" + COLUMN_EVENT_PLANT + ", " + COLUMN_EVENT_TYPE + ", " + COLUMN_EVENT_LAST_WATERED_ON + ", " + COLUMN_EVENT_DATE + ")" +
-            " VALUES (?, ?, ?, ?)"; // TODO How to autoincrement this?
+            " VALUES (?, ?, ?, ?)";
 
     private PreparedStatement queryPlantByName;
     private PreparedStatement queryPlantByExactScientificName;
@@ -237,13 +238,18 @@ public class DataSource {
         }
     }
 
-    public boolean isEventInDB (String scientificName, Event.EventType eventType) throws SQLException {
+    public boolean isEventInDB (String scientificName, Event.EventType eventType, LocalDate eventDate) throws SQLException {
 
         try {
+            Plant plant = queryPlantByExactScientificName(scientificName);
+            int wateringRecurrence = plant.getWateringRecurrence();
+
             queryIfEventExists = conn.prepareStatement(QUERY_IF_EVENT_EXISTS);
             queryPlantIdByScientificName = conn.prepareStatement(QUERY_PLANT_ID_BY_SCIENTIFIC_NAME);
             queryIfEventExists.setInt(1, queryPlantIdByScientificName(scientificName));
             queryIfEventExists.setString(2, eventType.toString());
+            queryIfEventExists.setString(3, eventDate.minusDays(wateringRecurrence).toString());
+            queryIfEventExists.setString(4, eventDate.plusDays(wateringRecurrence).toString());
             ResultSet resultSet = queryIfEventExists.executeQuery();
 
                 if(resultSet.isBeforeFirst()) {

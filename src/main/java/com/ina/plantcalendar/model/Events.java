@@ -41,15 +41,38 @@ public class Events {
             return;
         }
 
-        if (dataSource.isEventInDB(plantScientificName, eventType)) {
+        if (dataSource.isEventInDB(plantScientificName, eventType, lastWateredOn.plusDays(plant.getWateringRecurrence()))) {
             return;
         } else {
             Event event = new Event(plant, eventType, lastWateredOn);
             dataSource.addEvent(dataSource.queryPlantIdByScientificName(plant.getScientificName()), eventType, lastWateredOn, event.getNextOccurrence());
         }
+
+        // TODO Add logic for changing the event
     }
 
+    // TODO I need to figure out what will happen if there are several plants under the name;
+    public void addRecurringEvent(String plantScientificName, Event.EventType eventType, LocalDate lastWateredOn) throws SQLException {
+        Plant plant = dataSource.queryPlantByExactScientificName(plantScientificName);
 
+        if (plant == null) {
+            System.out.println("Plant not in the DB.");
+            return;
+        }
+
+        if (dataSource.isEventInDB(plantScientificName, eventType, lastWateredOn.plusDays(plant.getWateringRecurrence()))) {
+            return;
+        } else {
+            LocalDate timeFrame = LocalDate.now().plusDays(29);
+            LocalDate nextEventDate = lastWateredOn.plusDays(plant.getWateringRecurrence());
+            while(nextEventDate.isBefore(timeFrame)) {
+                Event event = new Event(plant, eventType, lastWateredOn);
+                dataSource.addEvent(dataSource.queryPlantIdByScientificName(plant.getScientificName()), eventType, lastWateredOn, nextEventDate);
+                lastWateredOn = nextEventDate;
+                nextEventDate = lastWateredOn.plusDays(plant.getWateringRecurrence());
+            }
+        }
+    }
 
     // TODO Get rid of this and connect everything to DB
     public void addEvent(Plant plant, Event.EventType eventType, LocalDate lastWateredOn) {
