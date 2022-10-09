@@ -104,9 +104,6 @@ License URL: http://creativecommons.org/licenses/by/3.0/
     <div class="container">
         <div class="gallery-grids">
             <div class="col-md-4 gallery-grid">
-                <a th:href="@{/plant-page}">
-                    <span class="link-spanner"></span>
-                </a>
                 <div class="grid">
                     <figure class="effect-roxy">
                         <a class="example-image-link" href="images/CalatheaLancifolia.jpg" data-lightbox="example-set" data-title="">
@@ -116,6 +113,9 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                                 <h3><b th:text = "${plant1_alias}"></b></h3>
                                 <div class="agileits-plant-care"><ul><li><i class="fa fa-tint" aria-hidden="true"></i><span th:text = "${plant1_watering_pattern}"></span></li></ul></div>
                             </figcaption>
+                        </a>
+                        <a th:href="@{/plant-page}">
+                            <span class="link-spanner"></span>
                         </a>
                     </figure>
                 </div>

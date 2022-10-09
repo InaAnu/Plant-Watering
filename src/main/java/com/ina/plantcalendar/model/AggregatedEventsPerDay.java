@@ -9,7 +9,7 @@ public class AggregatedEventsPerDay {
 
     private LocalDate date;
     private Event.EventType eventType;
-    private List<Plant> plants = new ArrayList<>();
+    private List<Plant> plants;
 
     public AggregatedEventsPerDay(LocalDate date, Event.EventType eventType, List<Plant> plants) {
         this.date = date;

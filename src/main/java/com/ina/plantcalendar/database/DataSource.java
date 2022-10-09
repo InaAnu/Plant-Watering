@@ -130,21 +130,6 @@ public class DataSource implements IDataSource {
         }
     }
 
-//    public void test(){
-//        try (Statement statement = conn.createStatement()){
-//            ResultSet resultSet = statement.executeQuery("pragma table_info(plant_list)");
-//
-//            List<String> columns = new ArrayList<>();
-//            while(resultSet.next()) {
-//                columns.add(resultSet.getString("name") + " " + resultSet.getString("type"));
-//                System.out.println(resultSet.getString("name") + " " + resultSet.getString("type"));
-//            }
-//            System.out.println("Gequeried");
-//        } catch (SQLException e) {
-//            System.out.println("Create view failed: " + e.getMessage());
-//        }
-//    }
-
     @Override
     public boolean createViewForPlantInfo() throws SQLException {
         try (Statement statement = conn.createStatement()){
