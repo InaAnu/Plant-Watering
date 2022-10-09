@@ -1,6 +1,5 @@
 package com.ina.plantcalendar.controller;
 
-import com.ina.plantcalendar.model.Events;
 import com.ina.plantcalendar.services.FooterService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

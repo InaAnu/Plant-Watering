@@ -1,9 +1,9 @@
 package com.ina.plantcalendar.controller;
 
 //import com.ina.plantcalendar.model.Event;
-//import com.ina.plantcalendar.model.Events;
+//import com.ina.plantcalendar.services.EventsService;
 import com.ina.plantcalendar.model.Event;
-import com.ina.plantcalendar.model.Events;
+import com.ina.plantcalendar.services.EventsService;
 import com.ina.plantcalendar.model.Plant;
 import com.ina.plantcalendar.services.FooterService;
 import org.springframework.stereotype.Controller;
@@ -17,35 +17,16 @@ import java.util.ArrayList;
 
 @Controller
 public class CalendarController {
-    private final Events events;
+    private final EventsService eventsService;
     private final FooterService footerService;
 
-    public CalendarController(Events events, FooterService footerService){
-        this.events = events;
+    public CalendarController(EventsService eventsService, FooterService footerService){
+        this.eventsService = eventsService;
         this.footerService = footerService;
     }
 
     @RequestMapping(value = "/calendar")
-    public String displayCalendar(Model model, @RequestParam(required = false, name = "upcoming_events") ArrayList<Event> upcomingEvents) throws SQLException {
-//        TODO Change this section to use the code from the database or from the Calendar Service
-
-        Plant calathea = new Plant("Calathea Lancifolia", "Rattlesnake Plant", Plant.PlantType.CALATHEA, 7);
-        Plant maranta = new Plant("Maranta Leuconeura", "Fascinator Tricolor", Plant.PlantType.MARANTA, 7);
-        Plant goldenPhotos = new Plant("Epipremnum Aureum", "Golden Pothos", Plant.PlantType.ARUM, 7);
-        Plant basil = new Plant("Ocium Basilicum", "Basil", Plant.PlantType.HERB, 1);
-        Plant veronaVein = new Plant("Parthenocissum Striata", "Verona Vein", Plant.PlantType.CLIMBER, 7);
-        Plant tundraTornado = new Plant("Sedum Makinoi", "Tundra Tornado", Plant.PlantType.SUCCULENT, 14);
-
-        events.addRecurringEventTest(calathea, Event.EventType.WATERING, LocalDate.now().minusDays(6));
-        events.addRecurringEventTest(maranta, Event.EventType.WATERING, LocalDate.now().minusDays(5));
-        events.addRecurringEventTest(tundraTornado, Event.EventType.WATERING, LocalDate.now().minusDays(7));
-        events.addRecurringEventTest(basil, Event.EventType.WATERING, LocalDate.now().minusDays(1));
-        events.addRecurringEventTest(veronaVein, Event.EventType.WATERING, LocalDate.now().minusDays(3));
-        events.addRecurringEventTest(goldenPhotos, Event.EventType.WATERING,LocalDate.now().minusDays(4));
-
-        upcomingEvents = events.getUpcomingEvents(6);
-
-        model.addAttribute("upcoming_events", upcomingEvents);
+    public String displayCalendar(Model model) throws SQLException {
 
         footerService.fillFooterData(model);
 

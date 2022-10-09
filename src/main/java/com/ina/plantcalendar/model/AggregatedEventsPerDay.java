@@ -2,56 +2,39 @@ package com.ina.plantcalendar.model;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class AggregatedEventsPerDay {
 
     private LocalDate date;
     private Event.EventType eventType;
+    private List<Plant> plants = new ArrayList<>();
 
-
-    private ArrayList<String> plantsForTheEvent = new ArrayList<>();
-
-    public AggregatedEventsPerDay(LocalDate date, Event.EventType eventType) {
+    public AggregatedEventsPerDay(LocalDate date, Event.EventType eventType, List<Plant> plants) {
         this.date = date;
         this.eventType = eventType;
+        this.plants = plants;
     }
 
     public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
-
     public Event.EventType getEventType() {
         return eventType;
     }
 
-    public void setEventType(Event.EventType eventType) {
-        this.eventType = eventType;
-    }
-
-    public ArrayList<String> getPlantsForTheEvent() {
-        return plantsForTheEvent;
-    }
-
-    public void setPlantsForTheEvent(ArrayList<String> plantsForTheEvent) {
-        this.plantsForTheEvent = plantsForTheEvent;
+    public List<Plant> getPlants() {
+        return plants;
     }
 
     @Override
     public String toString() {
-        StringBuilder plantsNameList = new StringBuilder();
-        for (String plantName:plantsForTheEvent) {
-            if(plantsNameList.length() != 0) {
-                plantsNameList.append(", ");
-            }
-            plantsNameList.append(plantName);
-        }
-        String dayOfTheWeek = date.getDayOfWeek().toString();
-        String dateDayMonth = date.getDayOfMonth() + " " + date.getMonth().toString().substring(0,1) + date.getMonth().toString().substring(1).toLowerCase();
-        return dayOfTheWeek.toString().substring(0,1) + dayOfTheWeek.toString().substring(1).toLowerCase() + ", " + dateDayMonth + " | " + eventType.toString().substring(0,1) + eventType.toString().substring(1).toLowerCase() + ": " + plantsForTheEvent;
+        return "AggregatedEventsPerDay{" +
+                "date=" + date +
+                ", eventType=" + eventType +
+                ", plants=" + plants.stream().map(Plant::getAlias).collect(Collectors.joining(", ")) +
+                '}';
     }
-    // TODO Can I do this in a simpler way to get the WATERING and JUNE to be Watering and June?
 }

@@ -1,5 +1,7 @@
-package com.ina.plantcalendar.model;
+package com.ina.plantcalendar.database;
 
+import com.ina.plantcalendar.model.Event;
+import com.ina.plantcalendar.model.Plant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -12,7 +14,7 @@ import java.util.List;
 
 @Component
 @Scope(BeanDefinition.SCOPE_SINGLETON)
-public class DataSource {
+public class DataSource implements IDataSource {
 
     // TODO Make a way to add plants to the database
 
@@ -95,6 +97,8 @@ public class DataSource {
             " (" + COLUMN_EVENT_PLANT + ", " + COLUMN_EVENT_TYPE + ", " + COLUMN_EVENT_LAST_WATERED_ON + ", " + COLUMN_EVENT_START_DATE + ", " + COLUMN_EVENT_END_DATE + ")" +
             " VALUES (?, ?, ?, ?, ?)";
 
+
+
     private PreparedStatement queryPlantByName;
     private PreparedStatement queryPlantByExactScientificName;
     private PreparedStatement queryIfEventExists;
@@ -141,6 +145,7 @@ public class DataSource {
 //        }
 //    }
 
+    @Override
     public boolean createViewForPlantInfo() throws SQLException {
         try (Statement statement = conn.createStatement()){
             statement.execute(CREATE_PLANT_INFO_LIST_VIEW);
@@ -152,6 +157,7 @@ public class DataSource {
         }
     }
 
+    @Override
     public boolean createViewForFullEventInfo() throws SQLException {
         try (Statement statement = conn.createStatement()) {
             statement.execute(CREATE_FULL_EVENT_INFO_VIEW);
@@ -163,6 +169,7 @@ public class DataSource {
         }
     }
 
+    @Override
     public List<Plant> queryPlantByName(String name) throws SQLException {
 
         try {
@@ -187,6 +194,7 @@ public class DataSource {
         }
     }
 
+    @Override
     public Plant queryPlantByExactScientificName(String exactScientificName) throws SQLException {
 
         try {
@@ -207,6 +215,7 @@ public class DataSource {
         }
     }
 
+    @Override
     public List<Plant> queryPlants() throws SQLException {
 
         try(Statement statement = conn.createStatement();
@@ -229,7 +238,8 @@ public class DataSource {
         }
     }
 
-    public int queryPlantIdByScientificName (String scientificName) throws SQLException{
+    @Override
+    public int queryPlantIdByScientificName(String scientificName) throws SQLException{
 
         try {
             queryPlantIdByScientificName = conn.prepareStatement(QUERY_PLANT_ID_BY_SCIENTIFIC_NAME);
@@ -243,7 +253,8 @@ public class DataSource {
         }
     }
 
-    public boolean isEventInDB (String scientificName, Event.EventType eventType) throws SQLException {
+    @Override
+    public boolean isEventInDB(String scientificName, Event.EventType eventType) throws SQLException {
 
         try {
             queryIfEventExists = conn.prepareStatement(QUERY_IF_EVENT_EXISTS);
@@ -265,6 +276,7 @@ public class DataSource {
         }
     }
 
+    @Override
     public boolean addRecurringEvent(int plantId, Event.EventType eventType, LocalDate lastWateredOn, LocalDate startDate, LocalDate endDate) throws SQLException {
 
         try {
@@ -284,6 +296,7 @@ public class DataSource {
         }
     }
 
+    @Override
     public boolean addRecurringEvent(int plantId, Event.EventType eventType, LocalDate lastWateredOn, LocalDate startDate) throws SQLException {
 
         try {

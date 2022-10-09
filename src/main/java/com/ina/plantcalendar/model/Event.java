@@ -8,7 +8,6 @@ public class Event {
     private EventType eventType;
     private LocalDate lastWateredOn;
     private LocalDate eventDate;
-//    public LocalDate today = LocalDate.now();
 
     public enum EventType {
         WATERING, FERTILIZING, REPLANTING

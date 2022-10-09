@@ -1,6 +1,6 @@
 package com.ina.plantcalendar.controller;
 
-import com.ina.plantcalendar.model.DataSource;
+import com.ina.plantcalendar.database.DataSource;
 import com.ina.plantcalendar.model.Plant;
 import com.ina.plantcalendar.services.FooterService;
 import com.ina.plantcalendar.services.MyPlantsService;
@@ -51,6 +51,7 @@ public class MyPlantsController {
     }
 
     @PostMapping(value={"/savePlant"})
+    // argument to this method should live in DTO package
     public String savePlant(@Valid @ModelAttribute("plant") Plant plant, Errors errors) {
         if (errors.hasErrors()) {
             log.error("From validation failed due to: " + errors.toString());

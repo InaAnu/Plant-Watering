@@ -1,10 +1,10 @@
 package com.ina.plantcalendar.model;
 
+import com.ina.plantcalendar.database.DataSource;
+import com.ina.plantcalendar.services.EventsService;
+
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.time.Period;
-import java.util.ArrayList;
-import java.util.List;
 
 public class MainForTests {
     public static void main(String[] args) throws SQLException {
@@ -48,13 +48,13 @@ public class MainForTests {
 //            System.out.println("The event was not found");
 //        }
 //
-        Events events = new Events(dataSource);
-        events.addRecurringEvent("Ocimum Basilicum", Event.EventType.WATERING, LocalDate.now().plusDays(5));
+        EventsService eventsService = new EventsService(dataSource);
+        eventsService.addRecurringEvent("Ocimum Basilicum", Event.EventType.WATERING, LocalDate.now().plusDays(5));
 
-        Events events1 = new Events(dataSource);
-        events1.addRecurringEvent("Sedum Makinoi", Event.EventType.WATERING, LocalDate.now().minusDays(3));
+        EventsService eventsService1 = new EventsService(dataSource);
+        eventsService1.addRecurringEvent("Sedum Makinoi", Event.EventType.WATERING, LocalDate.now().minusDays(3));
 
-//        Events events2 = new Events(dataSource);
+//        EventsService events2 = new EventsService(dataSource);
 //        events2.addRecurringEvent("Calathea Lancifolia", Event.EventType.WATERING, LocalDate.now());
 //        System.out.println(dataSource.queryPlants().get(0).getScientificName());
 
@@ -83,14 +83,14 @@ public class MainForTests {
 //        plantNames5.add("Basil");
 //        Event event5 = new Event(plantNames5, Event.EventType.WATERING, LocalDate.now().plus(Period.ofDays(4)));
 //
-//        Events events = new Events();
-//        events.addEvent(event1);
-//        events.addEvent(event2);
-//        events.addEvent(event3);
-//        events.addEvent(event4);
-//        events.addEvent(event5);
+//        EventsService eventsService = new EventsService();
+//        eventsService.addEvent(event1);
+//        eventsService.addEvent(event2);
+//        eventsService.addEvent(event3);
+//        eventsService.addEvent(event4);
+//        eventsService.addEvent(event5);
 //
-//        ArrayList<Event> eventsList = events.getUpcomingEvents(5);
+//        ArrayList<Event> eventsList = eventsService.getUpcomingEvents(5);
 
 //        for (var currentEvent:eventsList) {
 //            System.out.println(currentEvent);
