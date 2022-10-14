@@ -70,7 +70,7 @@ public class EventsService implements IEventsService {
 
     public List<AggregatedEventsPerDay> getUpcomingAggregatedEventsForTheUpcomingWeek() {
         // TODO implement dataSource.findAllEventsByDate();
-        List<Event> allFoundEvents = dataSource.findAllEventsByDate(LocalDate.now(), LocalDate.now().plusDays(7));
+        List<Event> allFoundEvents = dataSource.findAllEventsByDate(LocalDate.now(), LocalDate.now().plusDays(6));
         List<AggregatedEventsPerDay> allEventsForTheWeek = new ArrayList<>();
         Map<LocalDate, List<Event>> eventByDay = allFoundEvents.stream().collect(Collectors.groupingBy(Event::getEventDate));
 

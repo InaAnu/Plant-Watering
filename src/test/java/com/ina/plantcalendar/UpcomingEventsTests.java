@@ -104,4 +104,6 @@ public class UpcomingEventsTests {
         assertEquals(events.get(1).getEventDate(), result.get(1).getDate());
         assertEquals(List.of(plant), result.get(1).getPlants());
     }
+
+
 }
