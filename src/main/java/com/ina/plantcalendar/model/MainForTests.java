@@ -15,10 +15,10 @@ public class MainForTests {
 //        dataSource.createViewForFullEventInfo();
 
         EventsService eventsService = new EventsService(dataSource);
-        eventsService.addRecurringEvent("Ocimum Basilicum", Event.EventType.WATERING, LocalDate.now().plusDays(5));
+        eventsService.addRecurringEvent("Ocimum Basilicum", Event.EventType.WATERING, LocalDate.now().plusDays(2));
 
-        EventsService eventsService1 = new EventsService(dataSource);
-        eventsService1.addRecurringEvent("Sedum Makinoi", Event.EventType.WATERING, LocalDate.now().minusDays(3));
+//        EventsService eventsService1 = new EventsService(dataSource);
+//        eventsService1.addRecurringEvent("Parthenocissus Striata", Event.EventType.WATERING, LocalDate.now().minusDays(3));
 
     }
 

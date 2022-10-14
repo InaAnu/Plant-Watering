@@ -104,4 +104,13 @@ public class UpcomingEventsTests {
         assertEquals(events.get(1).getEventDate(), result.get(1).getDate());
         assertEquals(List.of(plant), result.get(1).getPlants());
     }
+
+    @Test
+    public void checkMockitoVerifyForDataSource() {
+        Mockito.when(dataSource.findAllEventsByDate(Mockito.any(), Mockito.any())).thenReturn(List.of());
+
+        eventsService.getUpcomingAggregatedEventsForTheUpcomingWeek();
+
+        Mockito.verify(dataSource).findAllEventsByDate(LocalDate.now(), LocalDate.now().plusDays(6));
+    }
 }
