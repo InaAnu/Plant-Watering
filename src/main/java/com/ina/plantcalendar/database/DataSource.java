@@ -36,7 +36,6 @@ public class DataSource implements IDataSource {
     public static final String COLUMN_EVENT_ID = "_id";
     public static final String COLUMN_EVENT_PLANT = "plant";
     public static final String COLUMN_EVENT_TYPE = "type";
-    public static final String COLUMN_EVENT_LAST_WATERED_ON = "last_watered_on";
     public static final String COLUMN_EVENT_START_DATE = "start_date";
     public static final String COLUMN_EVENT_END_DATE = "end_date";
 
@@ -56,8 +55,7 @@ public class DataSource implements IDataSource {
             "SELECT " + TABLE_EVENTS + "." + COLUMN_EVENT_ID + " AS event_id" + ", " + TABLE_PLANT_INFO + "." + COLUMN_PLANT_INFO_SCIENTIFIC_NAME + ", " +
             TABLE_PLANT_ALIASES + "." + COLUMN_PLANT_ALIASES_ALIAS + ", " + TABLE_PLANT_INFO + "." + COLUMN_PLANT_INFO_TYPE + " AS plant_type" + ", " +
             TABLE_PLANT_INFO + "." + COLUMN_PLANT_INFO_WATERING_RECURRENCE + ", " +
-            TABLE_EVENTS + "." + COLUMN_EVENT_TYPE + " AS event_type" + ", " + TABLE_EVENTS + "." + COLUMN_EVENT_LAST_WATERED_ON + ", "
-            + TABLE_EVENTS + "." + COLUMN_EVENT_START_DATE + ", " + TABLE_EVENTS + "." + COLUMN_EVENT_END_DATE +
+            TABLE_EVENTS + "." + COLUMN_EVENT_TYPE + " AS event_type" + ", " + TABLE_EVENTS + "." + COLUMN_EVENT_START_DATE + ", " + TABLE_EVENTS + "." + COLUMN_EVENT_END_DATE +
             " FROM " + TABLE_PLANT_INFO +
             " INNER JOIN " + TABLE_PLANT_ALIASES +
             " ON " + TABLE_PLANT_INFO + "." + COLUMN_PLANT_INFO_ID + " = " + TABLE_PLANT_ALIASES + "." + COLUMN_PLANT_ALIASES_SCIENTIFIC_NAME +
@@ -66,7 +64,7 @@ public class DataSource implements IDataSource {
             " ORDER BY " + TABLE_EVENTS + "." + COLUMN_EVENT_ID + ", " + TABLE_PLANT_INFO + "." + COLUMN_PLANT_INFO_SCIENTIFIC_NAME + ", " +
             TABLE_PLANT_ALIASES + "." + COLUMN_PLANT_ALIASES_ALIAS + ", " + TABLE_PLANT_INFO + "." + COLUMN_PLANT_INFO_TYPE + ", " +
             TABLE_PLANT_INFO + "." + COLUMN_PLANT_INFO_WATERING_RECURRENCE + ", " + TABLE_EVENTS + "." + COLUMN_EVENT_TYPE + ", " +
-            TABLE_EVENTS + "." + COLUMN_EVENT_LAST_WATERED_ON + ", " + TABLE_EVENTS + "." + COLUMN_EVENT_START_DATE + ", " +
+            TABLE_EVENTS + "." + COLUMN_EVENT_START_DATE + ", " +
             TABLE_EVENTS + "." + COLUMN_EVENT_END_DATE;
 
     public static final String QUERY_PLANT_BY_NAME = "SELECT *" +
@@ -90,13 +88,19 @@ public class DataSource implements IDataSource {
             " WHERE " + TABLE_PLANT_INFO + "." + COLUMN_PLANT_INFO_SCIENTIFIC_NAME + " = ?";
 
     public static final String ADD_RECURRING_EVENT_WITH_END_DATE = "INSERT INTO " + TABLE_EVENTS +
-            " (" + COLUMN_EVENT_PLANT + ", " + COLUMN_EVENT_TYPE + ", " + COLUMN_EVENT_LAST_WATERED_ON + ", " + COLUMN_EVENT_START_DATE + ", " + COLUMN_EVENT_END_DATE + ")" +
+            " (" + COLUMN_EVENT_PLANT + ", " + COLUMN_EVENT_TYPE + ", " + COLUMN_EVENT_START_DATE + ", " + COLUMN_EVENT_END_DATE + ")" +
             " VALUES (?, ?, ?, ?, ?)";
 
     public static final String ADD_RECURRING_EVENT_WITHOUT_END_DATE = "INSERT INTO " + TABLE_EVENTS +
-            " (" + COLUMN_EVENT_PLANT + ", " + COLUMN_EVENT_TYPE + ", " + COLUMN_EVENT_LAST_WATERED_ON + ", " + COLUMN_EVENT_START_DATE + ", " + COLUMN_EVENT_END_DATE + ")" +
+            " (" + COLUMN_EVENT_PLANT + ", " + COLUMN_EVENT_TYPE + ", " + COLUMN_EVENT_START_DATE + ", " + COLUMN_EVENT_END_DATE + ")" +
             " VALUES (?, ?, ?, ?, ?)";
 
+    public static final String QUERY_ALL_RECURRING_EVENTS_FOR_A_CHOSEN_PLANT_IN_THE_DATE_RANGE = "SELECT * FROM " + TABLE_FULL_EVENT_INFO_VIEW + " WHERE " +
+            COLUMN_PLANT_INFO_SCIENTIFIC_NAME + " = ? AND " +
+            COLUMN_EVENT_START_DATE + " BETWEEN ? AND ? AND " + COLUMN_EVENT_END_DATE + " IS NULL OR " + COLUMN_EVENT_END_DATE + " >= ?";
+
+    public static final String QUERY_ALL_RECURRING_EVENTS_IN_THE_DATE_RANGE = "SELECT * FROM " + TABLE_FULL_EVENT_INFO_VIEW + " WHERE " + COLUMN_EVENT_START_DATE + " BETWEEN ? AND ? AND " +
+            COLUMN_EVENT_END_DATE + " IS NULL OR " + COLUMN_EVENT_END_DATE + " >= ?";
 
 
     private PreparedStatement queryPlantByName;
@@ -104,6 +108,8 @@ public class DataSource implements IDataSource {
     private PreparedStatement queryIfEventExists;
     private PreparedStatement queryPlantIdByScientificName;
     private PreparedStatement addRecurringEvent;
+    private PreparedStatement queryAllRecurringEventsForAChosenPlantInTheDateRange;
+    private PreparedStatement queryAllRecurringEventsInTheDateRange;
 
     private final Connection conn;
 
@@ -156,7 +162,6 @@ public class DataSource implements IDataSource {
 
     @Override
     public List<Plant> queryPlantByName(String name) throws SQLException {
-
         try {
             queryPlantByName = conn.prepareStatement(QUERY_PLANT_BY_NAME);
             queryPlantByName.setString(1, "%" + name + "%");
@@ -181,7 +186,6 @@ public class DataSource implements IDataSource {
 
     @Override
     public Plant queryPlantByExactScientificName(String exactScientificName) throws SQLException {
-
         try {
             queryPlantByExactScientificName = conn.prepareStatement(QUERY_PLANT_BY_EXACT_SCIENTIFIC_NAME);
             queryPlantByExactScientificName.setString(1, exactScientificName);
@@ -202,7 +206,6 @@ public class DataSource implements IDataSource {
 
     @Override
     public List<Plant> queryPlants() throws SQLException {
-
         try(Statement statement = conn.createStatement();
             ResultSet resultSet = statement.executeQuery(GET_ALL_PLANTS)) {
             List<Plant> plants = new ArrayList<>();
@@ -225,7 +228,6 @@ public class DataSource implements IDataSource {
 
     @Override
     public int queryPlantIdByScientificName(String scientificName) throws SQLException{
-
         try {
             queryPlantIdByScientificName = conn.prepareStatement(QUERY_PLANT_ID_BY_SCIENTIFIC_NAME);
             queryPlantIdByScientificName.setString(1, scientificName);
@@ -240,7 +242,6 @@ public class DataSource implements IDataSource {
 
     @Override
     public boolean isEventInDB(String scientificName, Event.EventType eventType) throws SQLException {
-
         try {
             queryIfEventExists = conn.prepareStatement(QUERY_IF_EVENT_EXISTS);
             queryPlantIdByScientificName = conn.prepareStatement(QUERY_PLANT_ID_BY_SCIENTIFIC_NAME);
@@ -262,15 +263,13 @@ public class DataSource implements IDataSource {
     }
 
     @Override
-    public boolean addRecurringEvent(int plantId, Event.EventType eventType, LocalDate lastWateredOn, LocalDate startDate, LocalDate endDate) throws SQLException {
-
+    public boolean addRecurringEvent(int plantId, Event.EventType eventType, LocalDate startDate, LocalDate endDate) throws SQLException {
         try {
             addRecurringEvent = conn.prepareStatement(ADD_RECURRING_EVENT_WITH_END_DATE);
             addRecurringEvent.setInt(1, plantId);
             addRecurringEvent.setString(2, eventType.toString());
-            addRecurringEvent.setString(3, lastWateredOn.toString());
-            addRecurringEvent.setString(4, startDate.toString());
-            addRecurringEvent.setString(5, endDate.toString());
+            addRecurringEvent.setString(3, startDate.toString());
+            addRecurringEvent.setString(4, endDate.toString());
 
 
             addRecurringEvent.executeUpdate();
@@ -282,14 +281,12 @@ public class DataSource implements IDataSource {
     }
 
     @Override
-    public boolean addRecurringEvent(int plantId, Event.EventType eventType, LocalDate lastWateredOn, LocalDate startDate) throws SQLException {
-
+    public boolean addRecurringEvent(int plantId, Event.EventType eventType, LocalDate startDate) throws SQLException {
         try {
             addRecurringEvent = conn.prepareStatement(ADD_RECURRING_EVENT_WITHOUT_END_DATE);
             addRecurringEvent.setInt(1, plantId);
             addRecurringEvent.setString(2, eventType.toString());
-            addRecurringEvent.setString(3, lastWateredOn.toString());
-            addRecurringEvent.setString(4, startDate.toString());
+            addRecurringEvent.setString(3, startDate.toString());
 
             addRecurringEvent.executeUpdate();
             return true;
@@ -299,4 +296,45 @@ public class DataSource implements IDataSource {
         }
     }
 
+    @Override
+    public List<Event> findAllEventsForAPlantByDate(LocalDate from, LocalDate to, String scientificName) throws SQLException {
+        try {
+            queryAllRecurringEventsForAChosenPlantInTheDateRange = conn.prepareStatement(QUERY_ALL_RECURRING_EVENTS_FOR_A_CHOSEN_PLANT_IN_THE_DATE_RANGE);
+            queryAllRecurringEventsForAChosenPlantInTheDateRange.setString(1, scientificName);
+            queryAllRecurringEventsForAChosenPlantInTheDateRange.setString(2, from.toString());
+            queryAllRecurringEventsForAChosenPlantInTheDateRange.setString(3, to.toString());
+            queryAllRecurringEventsForAChosenPlantInTheDateRange.setString(4, to.toString());
+            ResultSet resultSet = queryAllRecurringEventsForAChosenPlantInTheDateRange.executeQuery();
+
+            List<Event> events = new ArrayList<>();
+            while(resultSet.next()) {
+
+                // TODO convert results to List<Event> using RecurringEvent class, check the query if still relevant
+            }
+            return events;
+        } catch (SQLException e) {
+            System.out.println("Querying events in the given range failed: " + e);
+            throw e;
+        }
+    }
+
+    @Override
+    public List<Event> findAllEventsByDate(LocalDate from, LocalDate to) throws SQLException {
+        try {
+            queryAllRecurringEventsInTheDateRange = conn.prepareStatement(QUERY_ALL_RECURRING_EVENTS_IN_THE_DATE_RANGE);
+            queryAllRecurringEventsInTheDateRange.setString(1, from.toString());
+            queryAllRecurringEventsInTheDateRange.setString(2, to.toString());
+            queryAllRecurringEventsInTheDateRange.setString(3, to.toString());
+            ResultSet resultSet = queryAllRecurringEventsInTheDateRange.executeQuery();
+
+            List<Event> events = new ArrayList<>();
+            while(resultSet.next()) {
+                // TODO convert results to List<Event> using RecurringEvent class, check the query if still relevant
+            }
+            return events;
+        } catch (SQLException e) {
+            System.out.println("Querying events in the given range failed: " + e);
+            throw e;
+        }
+    }
 }

@@ -22,11 +22,15 @@ public interface IDataSource {
 
     boolean isEventInDB(String scientificName, Event.EventType eventType) throws SQLException;
 
-    boolean addRecurringEvent(int plantId, Event.EventType eventType, LocalDate lastWateredOn, LocalDate startDate, LocalDate endDate) throws SQLException;
+    boolean addRecurringEvent(int plantId, Event.EventType eventType, LocalDate startDate, LocalDate endDate) throws SQLException;
 
-    boolean addRecurringEvent(int plantId, Event.EventType eventType, LocalDate lastWateredOn, LocalDate startDate) throws SQLException;
+    boolean addRecurringEvent(int plantId, Event.EventType eventType, LocalDate startDate) throws SQLException;
 
-    default List<Event> findAllEventsByDate(LocalDate from, LocalDate to) {
+    default List<Event> findAllEventsByDate(LocalDate from, LocalDate to) throws SQLException {
+        return List.of();
+    }
+
+    default List<Event> findAllEventsForAPlantByDate(LocalDate from, LocalDate to, String scientificName) throws SQLException {
         return List.of();
     }
 }

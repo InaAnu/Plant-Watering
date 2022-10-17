@@ -2,12 +2,10 @@ package com.ina.plantcalendar.services;
 
 import com.ina.plantcalendar.database.IDataSource;
 import com.ina.plantcalendar.model.AggregatedEventsPerDay;
-import com.ina.plantcalendar.database.DataSource;
 import com.ina.plantcalendar.model.Event;
 import com.ina.plantcalendar.model.Plant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.thymeleaf.expression.Lists;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -26,7 +24,7 @@ public class EventsService implements IEventsService {
     }
 
     // TODO I need to figure out what will happen if there are several plants under the name;
-    public void addRecurringEvent(String plantScientificName, Event.EventType eventType, LocalDate lastWateredOn, LocalDate endDate) throws SQLException {
+    public void addRecurringEvent(String plantScientificName, Event.EventType eventType, LocalDate startDate, LocalDate endDate) throws SQLException {
         Plant plant = dataSource.queryPlantByExactScientificName(plantScientificName);
 
         if (plant == null) {
@@ -37,14 +35,13 @@ public class EventsService implements IEventsService {
         if (dataSource.isEventInDB(plantScientificName, eventType)) {
             return;
         } else {
-            Event event = new Event(plant, eventType, lastWateredOn);
-            dataSource.addRecurringEvent(dataSource.queryPlantIdByScientificName(plant.getScientificName()), eventType, lastWateredOn, event.getEventDate(), endDate);
+            dataSource.addRecurringEvent(dataSource.queryPlantIdByScientificName(plant.getScientificName()), eventType, startDate, endDate);
         }
 
         // TODO Add logic for changing the event
     }
 
-    public void addRecurringEvent(String plantScientificName, Event.EventType eventType, LocalDate lastWateredOn) throws SQLException {
+    public void addRecurringEvent(String plantScientificName, Event.EventType eventType, LocalDate startDate) throws SQLException {
         Plant plant = dataSource.queryPlantByExactScientificName(plantScientificName);
 
         if (plant == null) {
@@ -55,21 +52,19 @@ public class EventsService implements IEventsService {
         if (dataSource.isEventInDB(plantScientificName, eventType)) {
             return;
         } else {
-            Event event = new Event(plant, eventType, lastWateredOn);
-            dataSource.addRecurringEvent(dataSource.queryPlantIdByScientificName(plant.getScientificName()), eventType, lastWateredOn, event.getEventDate());
+            dataSource.addRecurringEvent(dataSource.queryPlantIdByScientificName(plant.getScientificName()), eventType, startDate);
         }
 
         // TODO Add logic for changing the event
     }
 
     // TODO Get rid of this and connect everything to DB
-    public void addRecurringEventTest(Plant plant, Event.EventType eventType, LocalDate lastWateredOn) {
-        Event event = new Event(plant, eventType, lastWateredOn);
+    public void addRecurringEventTest(Plant plant, Event.EventType eventType, LocalDate startDate) {
+        Event event = new Event(plant, eventType, startDate);
         events.add(event);
     }
 
-    public List<AggregatedEventsPerDay> getUpcomingAggregatedEventsForTheUpcomingWeek() {
-        // TODO implement dataSource.findAllEventsByDate();
+    public List<AggregatedEventsPerDay> getUpcomingAggregatedEventsForTheUpcomingWeek() throws SQLException {
         List<Event> allFoundEvents = dataSource.findAllEventsByDate(LocalDate.now(), LocalDate.now().plusDays(6));
         List<AggregatedEventsPerDay> allEventsForTheWeek = new ArrayList<>();
         Map<LocalDate, List<Event>> eventByDay = allFoundEvents.stream().collect(Collectors.groupingBy(Event::getEventDate));

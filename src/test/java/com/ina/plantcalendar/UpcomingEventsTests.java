@@ -2,17 +2,12 @@ package com.ina.plantcalendar;
 
 
 import com.ina.plantcalendar.database.IDataSource;
-import com.ina.plantcalendar.model.AggregatedEventsPerDay;
 import com.ina.plantcalendar.model.Event;
 import com.ina.plantcalendar.model.Plant;
 import com.ina.plantcalendar.services.EventsService;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.util.Assert;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -106,7 +101,7 @@ public class UpcomingEventsTests {
     }
 
     @Test
-    public void checkMockitoVerifyForDataSource() {
+    public void checkMockitoVerifyForDataSource() throws SQLException {
         Mockito.when(dataSource.findAllEventsByDate(Mockito.any(), Mockito.any())).thenReturn(List.of());
 
         eventsService.getUpcomingAggregatedEventsForTheUpcomingWeek();

@@ -6,7 +6,6 @@ public class Event {
 
     private Plant plant;
     private EventType eventType;
-    private LocalDate lastWateredOn;
     private LocalDate eventDate;
 
     public enum EventType {
@@ -16,21 +15,16 @@ public class Event {
     public Event() {
     }
 
-    public Event(Plant plant, EventType eventType, LocalDate lastWateredOn) {
+    public Event(Plant plant, EventType eventType, LocalDate eventDate) {
         this.plant = plant;
         this.eventType = eventType;
-        int wateringRecurrence = plant.getWateringRecurrence();
-        this.eventDate = getEventDate(lastWateredOn,wateringRecurrence);
+        this.eventDate = eventDate;
     }
 
     // TODO Change to abstract class, to change behaviour depending on what type of event we have.
 
     public LocalDate getEventDate() {
         return eventDate;
-    }
-
-    public LocalDate getEventDate(LocalDate lastWateredOn, int wateringRecurrence) {
-        return lastWateredOn.plusDays(wateringRecurrence);
     }
 
     public void setEventDate(LocalDate eventDate) {
@@ -51,14 +45,6 @@ public class Event {
 
     public void setEventType(EventType eventType) {
         this.eventType = eventType;
-    }
-
-    public LocalDate getLastWateredOn() {
-        return lastWateredOn;
-    }
-
-    public void setLastWateredOn(LocalDate lastWateredOn) {
-        this.lastWateredOn = lastWateredOn;
     }
 
     @Override
