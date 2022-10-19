@@ -51,11 +51,14 @@ public class DataSource implements IDataSource {
             TABLE_PLANT_INFO + "." + COLUMN_PLANT_INFO_WATERING_RECURRENCE;
 
     public static final String TABLE_FULL_EVENT_INFO_VIEW = "full_event_info";
+    public static final String COLUMN_FULL_EVENT_INFO_VIEW_EVENT_ID= "event_id";
+    public static final String COLUMN_FULL_EVENT_INFO_VIEW_EVENT_TYPE= "event_type";
+    public static final String COLUMN_FULL_EVENT_INFO_VIEW_PLANT_TYPE= "plant_type";
     public static final String CREATE_FULL_EVENT_INFO_VIEW = "CREATE VIEW IF NOT EXISTS " + TABLE_FULL_EVENT_INFO_VIEW + " AS " +
-            "SELECT " + TABLE_EVENTS + "." + COLUMN_EVENT_ID + " AS event_id" + ", " + TABLE_PLANT_INFO + "." + COLUMN_PLANT_INFO_SCIENTIFIC_NAME + ", " +
-            TABLE_PLANT_ALIASES + "." + COLUMN_PLANT_ALIASES_ALIAS + ", " + TABLE_PLANT_INFO + "." + COLUMN_PLANT_INFO_TYPE + " AS plant_type" + ", " +
+            "SELECT " + TABLE_EVENTS + "." + COLUMN_EVENT_ID + " AS " + COLUMN_FULL_EVENT_INFO_VIEW_EVENT_ID + ", " + TABLE_PLANT_INFO + "." + COLUMN_PLANT_INFO_SCIENTIFIC_NAME + ", " +
+            TABLE_PLANT_ALIASES + "." + COLUMN_PLANT_ALIASES_ALIAS + ", " + TABLE_PLANT_INFO + "." + COLUMN_PLANT_INFO_TYPE + " AS " + COLUMN_FULL_EVENT_INFO_VIEW_PLANT_TYPE + ", " +
             TABLE_PLANT_INFO + "." + COLUMN_PLANT_INFO_WATERING_RECURRENCE + ", " +
-            TABLE_EVENTS + "." + COLUMN_EVENT_TYPE + " AS event_type" + ", " + TABLE_EVENTS + "." + COLUMN_EVENT_START_DATE + ", " + TABLE_EVENTS + "." + COLUMN_EVENT_END_DATE +
+            TABLE_EVENTS + "." + COLUMN_EVENT_TYPE + " AS " + COLUMN_FULL_EVENT_INFO_VIEW_EVENT_TYPE + ", " + TABLE_EVENTS + "." + COLUMN_EVENT_START_DATE + ", " + TABLE_EVENTS + "." + COLUMN_EVENT_END_DATE +
             " FROM " + TABLE_PLANT_INFO +
             " INNER JOIN " + TABLE_PLANT_ALIASES +
             " ON " + TABLE_PLANT_INFO + "." + COLUMN_PLANT_INFO_ID + " = " + TABLE_PLANT_ALIASES + "." + COLUMN_PLANT_ALIASES_SCIENTIFIC_NAME +
@@ -233,7 +236,13 @@ public class DataSource implements IDataSource {
             queryPlantIdByScientificName.setString(1, scientificName);
             ResultSet resultSet = queryPlantIdByScientificName.executeQuery();
 
-            return resultSet.getInt(1);
+            int result;
+            if(resultSet.next()) {
+                result = resultSet.getInt("_id");
+            } else {
+                result = -1;
+            }
+            return result;
         } catch (SQLException e) {
             System.out.println("Querying plant id by scientific name failed: " + e.getMessage());
             throw e;
@@ -308,8 +317,20 @@ public class DataSource implements IDataSource {
 
             List<Event> events = new ArrayList<>();
             while(resultSet.next()) {
+                scientificName = resultSet.getString(COLUMN_PLANT_INFO_SCIENTIFIC_NAME);
+                String alias = resultSet.getString(COLUMN_PLANT_ALIASES_ALIAS);
+                Plant.PlantType plantType = Plant.PlantType.valueOf(resultSet.getString(COLUMN_FULL_EVENT_INFO_VIEW_PLANT_TYPE));
+                int wateringRecurrence = resultSet.getInt(COLUMN_PLANT_INFO_WATERING_RECURRENCE);
+                Plant plant = new Plant(scientificName, alias, plantType,wateringRecurrence);
+                Event.EventType eventType = Event.EventType.valueOf(resultSet.getString(COLUMN_FULL_EVENT_INFO_VIEW_EVENT_TYPE));
 
-                // TODO convert results to List<Event> using RecurringEvent class, check the query if still relevant
+                // TODO How to get the date from SQLite (and not null)
+                LocalDate startDate = resultSet.getDate(COLUMN_EVENT_START_DATE).toLocalDate();
+                LocalDate endDate = resultSet.getDate(COLUMN_EVENT_END_DATE).toLocalDate();
+                RecurringEvent recurringEvent = new RecurringEvent(plant, eventType, startDate, endDate);
+
+                List<Event> eventsFromTheRecurringEvent = recurringEvent.getAllEventsInTheDateRange(from,to);
+                events.addAll(eventsFromTheRecurringEvent);
             }
             return events;
         } catch (SQLException e) {
@@ -329,7 +350,20 @@ public class DataSource implements IDataSource {
 
             List<Event> events = new ArrayList<>();
             while(resultSet.next()) {
-                // TODO convert results to List<Event> using RecurringEvent class, check the query if still relevant
+                String scientificName = resultSet.getString(COLUMN_PLANT_INFO_SCIENTIFIC_NAME);
+                String alias = resultSet.getString(COLUMN_PLANT_ALIASES_ALIAS);
+                Plant.PlantType plantType = Plant.PlantType.valueOf(resultSet.getString(COLUMN_FULL_EVENT_INFO_VIEW_PLANT_TYPE));
+                int wateringRecurrence = resultSet.getInt(COLUMN_PLANT_INFO_WATERING_RECURRENCE);
+                Plant plant = new Plant(scientificName, alias, plantType,wateringRecurrence);
+                Event.EventType eventType = Event.EventType.valueOf(resultSet.getString(COLUMN_FULL_EVENT_INFO_VIEW_EVENT_TYPE));
+
+                // TODO How to get the date from SQLite (and not null)
+                LocalDate startDate = resultSet.getDate(COLUMN_EVENT_START_DATE).toLocalDate();
+                LocalDate endDate = resultSet.getDate(COLUMN_EVENT_END_DATE).toLocalDate();
+                RecurringEvent recurringEvent = new RecurringEvent(plant, eventType, startDate, endDate);
+
+                List<Event> eventsFromTheRecurringEvent = recurringEvent.getAllEventsInTheDateRange(from,to);
+                events.addAll(eventsFromTheRecurringEvent);
             }
             return events;
         } catch (SQLException e) {
