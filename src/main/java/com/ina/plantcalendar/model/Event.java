@@ -50,7 +50,9 @@ public class Event {
     @Override
     public String toString() {
         String dayOfTheWeek = eventDate.getDayOfWeek().toString();
-        String dateDayMonth = eventDate.getDayOfMonth() + " " + eventDate.getMonth().toString().substring(0,1) + eventDate.getMonth().toString().substring(1).toLowerCase();
-        return dayOfTheWeek.substring(0,1) + dayOfTheWeek.substring(1).toLowerCase() + ", " + dateDayMonth + " | " + eventType.toString().substring(0,1) + eventType.toString().substring(1).toLowerCase() + ": " + plant.getAlias();
+        String dayOfTheWeekCapitalized = dayOfTheWeek.substring(0,1) + dayOfTheWeek.substring(1).toLowerCase();
+        String dateDayMonthCapitalized = eventDate.getDayOfMonth() + " " + eventDate.getMonth().toString().substring(0,1) + eventDate.getMonth().toString().substring(1).toLowerCase();
+        String eventTypeCapitalized = eventType.toString().substring(0,1) + eventType.toString().substring(1).toLowerCase();
+        return  dayOfTheWeekCapitalized + ", " + dateDayMonthCapitalized + " | " + eventTypeCapitalized + ": " + plant.getAlias();
     }
 }

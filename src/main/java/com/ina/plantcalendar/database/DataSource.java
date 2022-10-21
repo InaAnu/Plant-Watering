@@ -98,12 +98,14 @@ public class DataSource implements IDataSource {
             " (" + COLUMN_EVENT_PLANT + ", " + COLUMN_EVENT_TYPE + ", " + COLUMN_EVENT_START_DATE + ", " + COLUMN_EVENT_END_DATE + ")" +
             " VALUES (?, ?, ?, ?, ?)";
 
+    // Searching for events for 1 plant where start date is smaller or equal to the end date of the passed range and end date is larger or equal to the start date of the passed range
     public static final String QUERY_ALL_RECURRING_EVENTS_FOR_A_CHOSEN_PLANT_IN_THE_DATE_RANGE = "SELECT * FROM " + TABLE_FULL_EVENT_INFO_VIEW + " WHERE " +
             COLUMN_PLANT_INFO_SCIENTIFIC_NAME + " = ? AND " +
-            COLUMN_EVENT_START_DATE + " BETWEEN ? AND ? AND " + COLUMN_EVENT_END_DATE + " IS NULL OR " + COLUMN_EVENT_END_DATE + " >= ?";
+            COLUMN_EVENT_START_DATE + " <= ? AND " + COLUMN_EVENT_END_DATE + " IS NULL OR " + COLUMN_EVENT_END_DATE + " >= ?";
 
-    public static final String QUERY_ALL_RECURRING_EVENTS_IN_THE_DATE_RANGE = "SELECT * FROM " + TABLE_FULL_EVENT_INFO_VIEW + " WHERE " + COLUMN_EVENT_START_DATE + " BETWEEN ? AND ? AND " +
-            COLUMN_EVENT_END_DATE + " IS NULL OR " + COLUMN_EVENT_END_DATE + " >= ?";
+    // Searching for events where start date is smaller or equal to the end date of the passed range and end date is larger or equal to the start date of the passed range
+    public static final String QUERY_ALL_RECURRING_EVENTS_IN_THE_DATE_RANGE = "SELECT * FROM " + TABLE_FULL_EVENT_INFO_VIEW + " WHERE " +
+            COLUMN_EVENT_START_DATE + " <= ? AND " + COLUMN_EVENT_END_DATE + " IS NULL OR " + COLUMN_EVENT_END_DATE + " >= ?";
 
 
     private PreparedStatement queryPlantByName;
@@ -310,9 +312,8 @@ public class DataSource implements IDataSource {
         try {
             queryAllRecurringEventsForAChosenPlantInTheDateRange = conn.prepareStatement(QUERY_ALL_RECURRING_EVENTS_FOR_A_CHOSEN_PLANT_IN_THE_DATE_RANGE);
             queryAllRecurringEventsForAChosenPlantInTheDateRange.setString(1, scientificName);
-            queryAllRecurringEventsForAChosenPlantInTheDateRange.setString(2, from.toString());
-            queryAllRecurringEventsForAChosenPlantInTheDateRange.setString(3, to.toString());
-            queryAllRecurringEventsForAChosenPlantInTheDateRange.setString(4, to.toString());
+            queryAllRecurringEventsForAChosenPlantInTheDateRange.setString(2, to.toString());
+            queryAllRecurringEventsForAChosenPlantInTheDateRange.setString(3, from.toString());
             ResultSet resultSet = queryAllRecurringEventsForAChosenPlantInTheDateRange.executeQuery();
 
             List<Event> events = new ArrayList<>();
@@ -324,9 +325,13 @@ public class DataSource implements IDataSource {
                 Plant plant = new Plant(scientificName, alias, plantType,wateringRecurrence);
                 Event.EventType eventType = Event.EventType.valueOf(resultSet.getString(COLUMN_FULL_EVENT_INFO_VIEW_EVENT_TYPE));
 
-                // TODO How to get the date from SQLite (and not null)
-                LocalDate startDate = resultSet.getDate(COLUMN_EVENT_START_DATE).toLocalDate();
-                LocalDate endDate = resultSet.getDate(COLUMN_EVENT_END_DATE).toLocalDate();
+                LocalDate startDate = LocalDate.parse(resultSet.getString(COLUMN_EVENT_START_DATE));
+                LocalDate endDate;
+                if(resultSet.getDate(COLUMN_EVENT_END_DATE) != null) {
+                    endDate = LocalDate.parse(resultSet.getString(COLUMN_EVENT_END_DATE));
+                } else {
+                    endDate = null;
+                }
                 RecurringEvent recurringEvent = new RecurringEvent(plant, eventType, startDate, endDate);
 
                 List<Event> eventsFromTheRecurringEvent = recurringEvent.getAllEventsInTheDateRange(from,to);
@@ -343,9 +348,8 @@ public class DataSource implements IDataSource {
     public List<Event> findAllEventsByDate(LocalDate from, LocalDate to) throws SQLException {
         try {
             queryAllRecurringEventsInTheDateRange = conn.prepareStatement(QUERY_ALL_RECURRING_EVENTS_IN_THE_DATE_RANGE);
-            queryAllRecurringEventsInTheDateRange.setString(1, from.toString());
-            queryAllRecurringEventsInTheDateRange.setString(2, to.toString());
-            queryAllRecurringEventsInTheDateRange.setString(3, to.toString());
+            queryAllRecurringEventsInTheDateRange.setString(1, to.toString());
+            queryAllRecurringEventsInTheDateRange.setString(2, from.toString());
             ResultSet resultSet = queryAllRecurringEventsInTheDateRange.executeQuery();
 
             List<Event> events = new ArrayList<>();
@@ -355,11 +359,15 @@ public class DataSource implements IDataSource {
                 Plant.PlantType plantType = Plant.PlantType.valueOf(resultSet.getString(COLUMN_FULL_EVENT_INFO_VIEW_PLANT_TYPE));
                 int wateringRecurrence = resultSet.getInt(COLUMN_PLANT_INFO_WATERING_RECURRENCE);
                 Plant plant = new Plant(scientificName, alias, plantType,wateringRecurrence);
-                Event.EventType eventType = Event.EventType.valueOf(resultSet.getString(COLUMN_FULL_EVENT_INFO_VIEW_EVENT_TYPE));
 
-                // TODO How to get the date from SQLite (and not null)
-                LocalDate startDate = resultSet.getDate(COLUMN_EVENT_START_DATE).toLocalDate();
-                LocalDate endDate = resultSet.getDate(COLUMN_EVENT_END_DATE).toLocalDate();
+                Event.EventType eventType = Event.EventType.valueOf(resultSet.getString(COLUMN_FULL_EVENT_INFO_VIEW_EVENT_TYPE));
+                LocalDate startDate = LocalDate.parse(resultSet.getString(COLUMN_EVENT_START_DATE));
+                LocalDate endDate;
+                if(resultSet.getDate(COLUMN_EVENT_END_DATE) != null) {
+                   endDate = LocalDate.parse(resultSet.getString(COLUMN_EVENT_END_DATE));
+                } else {
+                    endDate = null;
+                }
                 RecurringEvent recurringEvent = new RecurringEvent(plant, eventType, startDate, endDate);
 
                 List<Event> eventsFromTheRecurringEvent = recurringEvent.getAllEventsInTheDateRange(from,to);

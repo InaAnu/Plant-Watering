@@ -31,10 +31,11 @@ public class AggregatedEventsPerDay {
 
     @Override
     public String toString() {
-        return "AggregatedEventsPerDay{" +
-                "date=" + date +
-                ", eventType=" + eventType +
-                ", plants=" + plants.stream().map(Plant::getAlias).collect(Collectors.joining(", ")) +
-                '}';
+        String dayOfTheWeek = date.getDayOfWeek().toString();
+        String dayOfTheWeekCapitalized = dayOfTheWeek.substring(0,1) + dayOfTheWeek.substring(1).toLowerCase();
+        String dateDayMonthCapitalized = date.getDayOfMonth() + " " + date.getMonth().toString().substring(0,1) + date.getMonth().toString().substring(1).toLowerCase();
+        String eventTypeCapitalized = eventType.toString().substring(0,1) + eventType.toString().substring(1).toLowerCase();
+        return dayOfTheWeekCapitalized + ", " + dateDayMonthCapitalized + " | " + eventTypeCapitalized + ": " +
+                plants.stream().map(Plant::getAlias).collect(Collectors.joining(", "));
     }
 }

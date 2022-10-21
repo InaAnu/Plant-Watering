@@ -23,8 +23,18 @@ public class MainForTests {
 //        eventsService1.addRecurringEvent("Parthenocissus Striata", Event.EventType.WATERING, LocalDate.now().minusDays(3));
 
 
-        List<Event> events = dataSource.findAllEventsByDate(LocalDate.of(2022, 10, 8), LocalDate.of(2022, 10, 19));
-        System.out.println(events);
+        List<Event> events = dataSource.findAllEventsByDate(LocalDate.of(2022, 10, 9), LocalDate.of(2022, 10, 25));
+        EventsService eventsService = new EventsService(dataSource);
+        List<AggregatedEventsPerDay> aggregatedEventsPerDay = eventsService.getUpcomingAggregatedEventsForTheUpcomingWeek();
+        for (var event:aggregatedEventsPerDay) {
+            System.out.println(event);
+        }
+
+        List<Event> eventsForAPlant = dataSource.findAllEventsForAPlantByDate(LocalDate.of(2022, 10, 9), LocalDate.of(2022, 10, 25), "Ocimum Basilicum" );
+        for (var event:eventsForAPlant) {
+            System.out.println(event);
+        }
+
     }
 
 }
