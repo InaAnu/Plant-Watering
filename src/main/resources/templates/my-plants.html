@@ -109,12 +109,12 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                         <a class="example-image-link" href="images/CalatheaLancifolia.jpg" data-lightbox="example-set" data-title="">
                             <img src="images/CalatheaLancifolia.jpg" alt="" width="160", height="145"/>
                             <figcaption>
-                                <h3 th:text = "${plant1_name}"></h3>
+                                <h3 th:text = "${plant1_scientific_name}"></h3>
                                 <h3><b th:text = "${plant1_alias}"></b></h3>
                                 <div class="agileits-plant-care"><ul><li><i class="fa fa-tint" aria-hidden="true"></i><span th:text = "${plant1_watering_pattern}"></span></li></ul></div>
                             </figcaption>
                         </a>
-                        <a th:href="@{/plant-page}">
+                        <a th:href="@{'/plant-page/'+${plant1_scientific_name}}">
                             <span class="link-spanner"></span>
                         </a>
                     </figure>
@@ -126,7 +126,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                         <a class="example-image-link" href="images/MarantaLeuconeura.jpg" data-lightbox="example-set" data-title="">
                             <img src="images/MarantaLeuconeura.jpg" alt="">
                             <figcaption>
-                                <h3 th:text = "${plant2_name}"></h3>
+                                <h3 th:text = "${plant2_scientific_name}"></h3>
                                 <h3><b th:text = "${plant2_alias}"></b></h3>
                                 <div class="agileits-plant-care"><ul><li><i class="fa fa-tint" aria-hidden="true"></i><span th:text = "${plant2_watering_pattern}"></span></li></ul></div>
                             </figcaption>
@@ -140,7 +140,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                         <a class="example-image-link" href="images/GoldenPothos.jpg" data-lightbox="example-set" data-title="">
                             <img src="images/GoldenPothos.jpg" alt="" />
                             <figcaption>
-                                <h3 th:text = "${plant3_name}"></h3>
+                                <h3 th:text = "${plant3_scientific_name}"></h3>
                                 <h3><b th:text = "${plant3_alias}"></b></h3>
                                 <div class="agileits-plant-care"><ul><li><i class="fa fa-tint" aria-hidden="true"></i><span th:text = "${plant3_watering_pattern}"></span></li></ul></div>
                             </figcaption>
@@ -154,7 +154,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                         <a class="example-image-link" href="images/OcimumBasilicum.jpg" data-lightbox="example-set" data-title="">
                             <img src="images/OcimumBasilicum.jpg" alt="" />
                             <figcaption>
-                                <h3 th:text = "${plant4_name}"></h3>
+                                <h3 th:text = "${plant4_scientific_name}"></h3>
                                 <h3><b th:text = "${plant4_alias}"></b></h3>
                                 <div class="agileits-plant-care"><ul><li><i class="fa fa-tint" aria-hidden="true"></i><span th:text = "${plant4_watering_pattern}"></span></li></ul></div>
                             </figcaption>
@@ -168,7 +168,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                         <a class="example-image-link" href="images/ParthenocissusStriata.jpg" data-lightbox="example-set" data-title="">
                             <img src="images/ParthenocissusStriata.jpg" alt="" />
                             <figcaption>
-                                <h3 th:text = "${plant5_name}"></h3>
+                                <h3 th:text = "${plant5_scientific_name}"></h3>
                                 <h3><b th:text = "${plant5_alias}"></b></h3>
                                 <div class="agileits-plant-care"><ul><li><i class="fa fa-tint" aria-hidden="true"></i><span th:text = "${plant5_watering_pattern}"></span></li></ul></div>
                             </figcaption>
@@ -182,7 +182,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                         <a class="example-image-link" href="images/SedumMakinoi.jpg" data-lightbox="example-set" data-title="">
                             <img src="images/SedumMakinoi.jpg" alt="" />
                             <figcaption>
-                                <h3 th:text = "${plant6_name}"></h3>
+                                <h3 th:text = "${plant6_scientific_name}"></h3>
                                 <h3><b th:text = "${plant6_alias}"></b></h3>
                                 <div class="agileits-plant-care"><ul><li><i class="fa fa-tint" aria-hidden="true"></i><span th:text = "${plant6_watering_pattern}"></span></li></ul></div>
                             </figcaption>

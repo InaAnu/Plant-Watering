@@ -40,7 +40,7 @@ public class MyPlantsController {
         // Plants in the gallery
 
         for (int i=0; i<6; i++) {
-            model.addAttribute("plant" + (i+1) + "_name", dataSource.queryPlants().get(i).getScientificName());
+            model.addAttribute("plant" + (i+1) + "_scientific_name", dataSource.queryPlants().get(i).getScientificName());
             model.addAttribute("plant" + (i+1) + "_alias", dataSource.queryPlants().get(i).getAlias());
             model.addAttribute("plant" + (i+1) + "_watering_pattern", dataSource.queryPlants().get(i).getWateringPatternText());
         }

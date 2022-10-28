@@ -20,6 +20,8 @@ body{
 }
 
 /*-- personal tweaks --*/
+
+/*-- my-plants gallery --*/
 .link-spanner{
   position:absolute;
   width:100%;
@@ -28,6 +30,8 @@ body{
   left: 0;
   z-index: 1;
 }
+/*-- //my-plants gallery --*/
+
 /*-- //personal tweaks --*/
 
 /*-- banner-top --*/
