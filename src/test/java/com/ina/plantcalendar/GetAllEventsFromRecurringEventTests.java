@@ -13,7 +13,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class GetAllEventsFromRecurringEventTest {
+public class GetAllEventsFromRecurringEventTests {
 
     Plant plantWateredDaily = new Plant("Calathea", Plant.PlantType.CALATHEA, 1);
     Plant plantWateredWeekly = new Plant("Calathea", Plant.PlantType.CALATHEA, 7);

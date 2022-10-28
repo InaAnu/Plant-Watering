@@ -58,10 +58,9 @@ public class EventsService implements IEventsService {
         // TODO Add logic for changing the event
     }
 
-    // TODO Get rid of this and connect everything to DB
-    public void addRecurringEventTest(Plant plant, Event.EventType eventType, LocalDate startDate) {
-        Event event = new Event(plant, eventType, startDate);
-        events.add(event);
+    public List<Event> getEventsForAPlantInTheDateRange(String scientificName, LocalDate from, LocalDate to) throws SQLException {
+        List<Event> allFoundEvents = dataSource.findAllEventsForAPlantByDate(from, to, scientificName);
+        return allFoundEvents;
     }
 
     public List<AggregatedEventsPerDay> getUpcomingAggregatedEventsForTheUpcomingWeek() throws SQLException {
