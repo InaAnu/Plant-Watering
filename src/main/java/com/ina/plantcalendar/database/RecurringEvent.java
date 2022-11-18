@@ -6,6 +6,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -89,7 +90,7 @@ public class RecurringEvent {
                 return events;
             } else {
                 LocalDate firstEventInTheRange;
-                int numberOfDaysBetweenFromDateAndStartDate = from.compareTo(startDate);
+                int numberOfDaysBetweenFromDateAndStartDate = Period.between(startDate, from).getDays();
                 if((numberOfDaysBetweenFromDateAndStartDate%recurrence) == 0) {
                     firstEventInTheRange = startDate.plusDays(numberOfDaysBetweenFromDateAndStartDate);
                 } else {

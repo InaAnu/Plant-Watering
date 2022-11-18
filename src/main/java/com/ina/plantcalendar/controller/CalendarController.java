@@ -17,6 +17,7 @@ import java.util.ArrayList;
 
 @Controller
 public class CalendarController {
+
     private final EventsService eventsService;
     private final FooterService footerService;
 

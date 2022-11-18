@@ -19,6 +19,7 @@ public class Plant {
     private String scientificName;
     @Column(name = "alias")
     private String alias;
+    @Enumerated(EnumType.STRING)
     @Column(name = "type")
     private PlantType type;
     @Column(name = "watering_recurrence")
