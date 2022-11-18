@@ -2,18 +2,32 @@ package com.ina.plantcalendar.database;
 
 import com.ina.plantcalendar.model.Event;
 import com.ina.plantcalendar.model.Plant;
+import org.hibernate.annotations.GenericGenerator;
 
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
+@Table(name = "events")
 public class RecurringEvent {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
+    @GenericGenerator(name = "native", strategy = "native")
+    @Column(name = "_id")
+    private int id;
+    @Column(name = "plant")
     private Plant plant;
+    @Column(name = "type")
+    @Enumerated(EnumType.STRING)
     private Event.EventType type;
     // startDate indicates the date of the first event
+    @Column(name = "start_date")
     private LocalDate startDate;
     // endDate indicates the date by which the recurring events will end. If set to null it means that the event has no end date and is still active.
+    @Column(name = "end_date")
     private LocalDate endDate;
 
     public RecurringEvent(Plant plant, Event.EventType type, LocalDate startDate, LocalDate endDate) {

@@ -8,7 +8,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface IDataSource {
-    boolean createViewForPlantInfo() throws SQLException;
 
     boolean createViewForFullEventInfo() throws SQLException;
 

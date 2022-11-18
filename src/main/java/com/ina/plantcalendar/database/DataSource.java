@@ -21,14 +21,10 @@ public class DataSource implements IDataSource {
     public static final String DB_NAME = "plant_calendar.db";
     public static final String CONNECTION_STRING = "jdbc:sqlite:/Users/ina/Library/Mobile Documents/com~apple~CloudDocs/Ina/Programming/Personal Projects/Plant-Watering/src/main/resources/data/" + DB_NAME;
 
-    public static final String TABLE_PLANT_ALIASES = "plant_aliases";
-    public static final String COLUMN_PLANT_ALIASES_ID = "_id";
-    public static final String COLUMN_PLANT_ALIASES_ALIAS = "alias";
-    public static final String COLUMN_PLANT_ALIASES_SCIENTIFIC_NAME = "scientific_name";
-
     public static final String TABLE_PLANT_INFO = "plant_information";
     public static final String COLUMN_PLANT_INFO_ID = "_id";
     public static final String COLUMN_PLANT_INFO_SCIENTIFIC_NAME = "scientific_name";
+    public static final String COLUMN_PLANT_INFO_ALIAS = "alias";
     public static final String COLUMN_PLANT_INFO_TYPE = "type";
     public static final String COLUMN_PLANT_INFO_WATERING_RECURRENCE = "watering_recurrence";
 
@@ -39,46 +35,33 @@ public class DataSource implements IDataSource {
     public static final String COLUMN_EVENT_START_DATE = "start_date";
     public static final String COLUMN_EVENT_END_DATE = "end_date";
 
-    public static final String TABLE_PLANT_INFO_LIST_VIEW = "plant_list";
-    public static final String CREATE_PLANT_INFO_LIST_VIEW = "CREATE VIEW IF NOT EXISTS " + TABLE_PLANT_INFO_LIST_VIEW + " AS " +
-            "SELECT " + TABLE_PLANT_INFO + "." + COLUMN_PLANT_INFO_ID + ", " + TABLE_PLANT_INFO + "." + COLUMN_PLANT_INFO_SCIENTIFIC_NAME + ", " +
-            TABLE_PLANT_ALIASES + "." + COLUMN_PLANT_ALIASES_ALIAS + ", " + TABLE_PLANT_INFO + "." + COLUMN_PLANT_INFO_TYPE + ", " +
-            TABLE_PLANT_INFO + "." + COLUMN_PLANT_INFO_WATERING_RECURRENCE +
-            " FROM " + TABLE_PLANT_INFO + " INNER JOIN " + TABLE_PLANT_ALIASES +
-            " ON " + TABLE_PLANT_INFO + "." + COLUMN_PLANT_INFO_ID + " = " + TABLE_PLANT_ALIASES + "." + COLUMN_PLANT_ALIASES_SCIENTIFIC_NAME +
-            " ORDER BY " + TABLE_PLANT_INFO + "." + COLUMN_PLANT_INFO_ID + ", " + TABLE_PLANT_INFO + "." + COLUMN_PLANT_INFO_SCIENTIFIC_NAME + ", " +
-            TABLE_PLANT_ALIASES + "." + COLUMN_PLANT_ALIASES_ALIAS + ", " + TABLE_PLANT_INFO + "." + COLUMN_PLANT_INFO_TYPE + ", " +
-            TABLE_PLANT_INFO + "." + COLUMN_PLANT_INFO_WATERING_RECURRENCE;
-
     public static final String TABLE_FULL_EVENT_INFO_VIEW = "full_event_info";
     public static final String COLUMN_FULL_EVENT_INFO_VIEW_EVENT_ID= "event_id";
     public static final String COLUMN_FULL_EVENT_INFO_VIEW_EVENT_TYPE= "event_type";
     public static final String COLUMN_FULL_EVENT_INFO_VIEW_PLANT_TYPE= "plant_type";
     public static final String CREATE_FULL_EVENT_INFO_VIEW = "CREATE VIEW IF NOT EXISTS " + TABLE_FULL_EVENT_INFO_VIEW + " AS " +
             "SELECT " + TABLE_EVENTS + "." + COLUMN_EVENT_ID + " AS " + COLUMN_FULL_EVENT_INFO_VIEW_EVENT_ID + ", " + TABLE_PLANT_INFO + "." + COLUMN_PLANT_INFO_SCIENTIFIC_NAME + ", " +
-            TABLE_PLANT_ALIASES + "." + COLUMN_PLANT_ALIASES_ALIAS + ", " + TABLE_PLANT_INFO + "." + COLUMN_PLANT_INFO_TYPE + " AS " + COLUMN_FULL_EVENT_INFO_VIEW_PLANT_TYPE + ", " +
+            TABLE_PLANT_INFO + "." + COLUMN_PLANT_INFO_ALIAS + ", " + TABLE_PLANT_INFO + "." + COLUMN_PLANT_INFO_TYPE + " AS " + COLUMN_FULL_EVENT_INFO_VIEW_PLANT_TYPE + ", " +
             TABLE_PLANT_INFO + "." + COLUMN_PLANT_INFO_WATERING_RECURRENCE + ", " +
             TABLE_EVENTS + "." + COLUMN_EVENT_TYPE + " AS " + COLUMN_FULL_EVENT_INFO_VIEW_EVENT_TYPE + ", " + TABLE_EVENTS + "." + COLUMN_EVENT_START_DATE + ", " + TABLE_EVENTS + "." + COLUMN_EVENT_END_DATE +
             " FROM " + TABLE_PLANT_INFO +
-            " INNER JOIN " + TABLE_PLANT_ALIASES +
-            " ON " + TABLE_PLANT_INFO + "." + COLUMN_PLANT_INFO_ID + " = " + TABLE_PLANT_ALIASES + "." + COLUMN_PLANT_ALIASES_SCIENTIFIC_NAME +
             " INNER JOIN " + TABLE_EVENTS +
             " ON " + TABLE_PLANT_INFO + "." + COLUMN_PLANT_INFO_ID + " = " + TABLE_EVENTS + "." + COLUMN_EVENT_PLANT +
             " ORDER BY " + TABLE_EVENTS + "." + COLUMN_EVENT_ID + ", " + TABLE_PLANT_INFO + "." + COLUMN_PLANT_INFO_SCIENTIFIC_NAME + ", " +
-            TABLE_PLANT_ALIASES + "." + COLUMN_PLANT_ALIASES_ALIAS + ", " + TABLE_PLANT_INFO + "." + COLUMN_PLANT_INFO_TYPE + ", " +
+            TABLE_PLANT_INFO + "." + COLUMN_PLANT_INFO_ALIAS + ", " + TABLE_PLANT_INFO + "." + COLUMN_PLANT_INFO_TYPE + ", " +
             TABLE_PLANT_INFO + "." + COLUMN_PLANT_INFO_WATERING_RECURRENCE + ", " + TABLE_EVENTS + "." + COLUMN_EVENT_TYPE + ", " +
             TABLE_EVENTS + "." + COLUMN_EVENT_START_DATE + ", " +
             TABLE_EVENTS + "." + COLUMN_EVENT_END_DATE;
 
     public static final String QUERY_PLANT_BY_NAME = "SELECT *" +
-            " FROM " + TABLE_PLANT_INFO_LIST_VIEW +
-            " WHERE " + COLUMN_PLANT_ALIASES_ALIAS + " LIKE ? OR " + COLUMN_PLANT_INFO_SCIENTIFIC_NAME + " LIKE ?";
+            " FROM " + TABLE_PLANT_INFO +
+            " WHERE " + COLUMN_PLANT_INFO_ALIAS + " LIKE ? OR " + COLUMN_PLANT_INFO_SCIENTIFIC_NAME + " LIKE ?";
 
     public static final String QUERY_PLANT_BY_EXACT_SCIENTIFIC_NAME = "SELECT *" +
-            " FROM " + TABLE_PLANT_INFO_LIST_VIEW +
+            " FROM " + TABLE_PLANT_INFO +
             " WHERE " + COLUMN_PLANT_INFO_SCIENTIFIC_NAME + " = ?";
 
-    public static final String GET_ALL_PLANTS = "SELECT * FROM " + TABLE_PLANT_INFO_LIST_VIEW;
+    public static final String GET_ALL_PLANTS = "SELECT * FROM " + TABLE_PLANT_INFO;
 
     public static final String QUERY_IF_EVENT_EXISTS = "SELECT " + TABLE_EVENTS + "." + COLUMN_EVENT_PLANT + ", " + TABLE_EVENTS + "." + COLUMN_EVENT_TYPE +
             " FROM " + TABLE_EVENTS +
@@ -138,18 +121,6 @@ public class DataSource implements IDataSource {
             }
         } catch (SQLException e){
             System.out.println("Could not close connection to database: " + e);
-        }
-    }
-
-    @Override
-    public boolean createViewForPlantInfo() throws SQLException {
-        try (Statement statement = conn.createStatement()){
-            statement.execute(CREATE_PLANT_INFO_LIST_VIEW);
-            System.out.println("Created view: plant_list");
-            return true;
-        } catch (SQLException e) {
-            System.out.println("Create plant_list view failed: " + e.getMessage());
-            throw e;
         }
     }
 
@@ -319,7 +290,7 @@ public class DataSource implements IDataSource {
             List<Event> events = new ArrayList<>();
             while(resultSet.next()) {
                 scientificName = resultSet.getString(COLUMN_PLANT_INFO_SCIENTIFIC_NAME);
-                String alias = resultSet.getString(COLUMN_PLANT_ALIASES_ALIAS);
+                String alias = resultSet.getString(COLUMN_PLANT_INFO_ALIAS);
                 Plant.PlantType plantType = Plant.PlantType.valueOf(resultSet.getString(COLUMN_FULL_EVENT_INFO_VIEW_PLANT_TYPE));
                 int wateringRecurrence = resultSet.getInt(COLUMN_PLANT_INFO_WATERING_RECURRENCE);
                 Plant plant = new Plant(scientificName, alias, plantType,wateringRecurrence);
@@ -355,7 +326,7 @@ public class DataSource implements IDataSource {
             List<Event> events = new ArrayList<>();
             while(resultSet.next()) {
                 String scientificName = resultSet.getString(COLUMN_PLANT_INFO_SCIENTIFIC_NAME);
-                String alias = resultSet.getString(COLUMN_PLANT_ALIASES_ALIAS);
+                String alias = resultSet.getString(COLUMN_PLANT_INFO_ALIAS);
                 Plant.PlantType plantType = Plant.PlantType.valueOf(resultSet.getString(COLUMN_FULL_EVENT_INFO_VIEW_PLANT_TYPE));
                 int wateringRecurrence = resultSet.getInt(COLUMN_PLANT_INFO_WATERING_RECURRENCE);
                 Plant plant = new Plant(scientificName, alias, plantType,wateringRecurrence);

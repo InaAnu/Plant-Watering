@@ -1,52 +1,45 @@
-package com.ina.plantcalendar.model;
+package com.ina.plantcalendar.dto;
 
-import org.hibernate.annotations.GenericGenerator;
-import org.springframework.context.annotation.Primary;
+import com.ina.plantcalendar.model.Plant;
+import lombok.Data;
 
-import javax.persistence.*;
-import java.util.List;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
-@Entity
-@Table(name = "plant_information")
-public class Plant {
+@Data
+public class PlantDTO {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
-    @GenericGenerator(name = "native", strategy = "native")
-    @Column(name = "_id")
-    private int id;
-    @Column(name = "scientific_name")
+    @NotBlank(message = "Name must not be blank")
+    @Size(min=3, message = "Name must be at least 3 characters long")
     private String scientificName;
-    @Column(name = "alias")
+    @NotBlank(message = "Your plants does not have a name?! Just call it \"The Plant in the Kitchen\"")
     private String alias;
-    @Column(name = "type")
-    private PlantType type;
-    @Column(name = "watering_recurrence")
+    @NotBlank(message = "Type must not be blank")
+    private com.ina.plantcalendar.model.Plant.PlantType type;
+        private String additionalInfo;
+    @Size(min=1, max=31, message = "Number of days must be between 1 and 31")
     private int wateringRecurrence;
-    @Column(name = "watering_pattern")
     private String wateringPatternText;
-    public enum PlantType {
-        FERN, SMALL_TREE, CACTUS, SUCCULENT, VINE, ORCHID, OTHER, NO_IDEA, CALATHEA, MARANTA, ARUM, HERB, CLIMBER
-    }
+    // TODO check out how to add this information as a drop down menu
+    public Plant.PlantType plantType;
 
-    public Plant(String scientificName, PlantType type, int wateringRecurrence) {
+    public PlantDTO(String scientificName, com.ina.plantcalendar.model.Plant.PlantType type, int wateringRecurrence) {
         this.scientificName = scientificName;
         this.type = type;
+        this.additionalInfo = additionalInfo;
         // If alias is not entered, scientific name should be used instead whenever alias is required.
         this.alias = scientificName;
         this.wateringRecurrence = wateringRecurrence;
         this.wateringPatternText = getPatternText(wateringRecurrence);
     }
 
-    public Plant(String scientificName, String alias, PlantType type, int wateringRecurrence) {
+    public PlantDTO(String scientificName, String alias, com.ina.plantcalendar.model.Plant.PlantType type, int wateringRecurrence) {
         this.scientificName = scientificName;
         this.alias = alias;
         this.type = type;
+//        this.additionalInfo = additionalInfo;
         this.wateringRecurrence = wateringRecurrence;
         this.wateringPatternText = getPatternText(wateringRecurrence);
-    }
-
-    public Plant() {
     }
 
     public String getScientificName() {
@@ -65,12 +58,20 @@ public class Plant {
         this.alias = alias;
     }
 
-    public PlantType getType() {
+    public com.ina.plantcalendar.model.Plant.PlantType getType() {
         return type;
     }
 
-    public void setType(PlantType type) {
+    public void setType(com.ina.plantcalendar.model.Plant.PlantType type) {
         this.type = type;
+    }
+
+    public String getAdditionalInfo() {
+        return additionalInfo;
+    }
+
+    public void setAdditionalInfo(String additionalInfo) {
+        this.additionalInfo = additionalInfo;
     }
 
     public int getWateringRecurrence() {
@@ -107,3 +108,4 @@ public class Plant {
         return patternText;
     }
 }
+
