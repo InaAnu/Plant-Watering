@@ -9,9 +9,7 @@ import java.util.List;
 
 public interface IDataSource {
 
-    boolean createViewForFullEventInfo() throws SQLException;
-
-    List<Plant> queryPlantByName(String name) throws SQLException;
+    List<Plant> queryByName(String name) throws SQLException;
 
     Plant queryPlantByExactScientificName(String exactScientificName) throws SQLException;
 
@@ -19,11 +17,13 @@ public interface IDataSource {
 
     int queryPlantIdByScientificName(String scientificName) throws SQLException;
 
-    boolean isEventInDB(String scientificName, Event.EventType eventType) throws SQLException;
+    boolean isEventInDB(String scientificName, Event.EventType eventType, LocalDate from, LocalDate to);
 
     boolean addRecurringEvent(int plantId, Event.EventType eventType, LocalDate startDate, LocalDate endDate) throws SQLException;
 
     boolean addRecurringEvent(int plantId, Event.EventType eventType, LocalDate startDate) throws SQLException;
+
+    int queryIdByScientificName(String scientificName);
 
     default List<Event> findAllEventsByDate(LocalDate from, LocalDate to) throws SQLException {
         return List.of();

@@ -9,7 +9,7 @@ import javax.persistence.Entity;
 
 @SpringBootApplication
 @EnableJpaRepositories("com.ina.plantcalendar.database")
-@EntityScan("com.ina.plantcalendar.model")
+@EntityScan(basePackages = {"com.ina.plantcalendar.model", "com.ina.plantcalendar.database"})
 public class PlantWateringApplication {
 
 	public static void main(String[] args) {

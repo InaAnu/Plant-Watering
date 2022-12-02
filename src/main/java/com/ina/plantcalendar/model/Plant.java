@@ -1,5 +1,6 @@
 package com.ina.plantcalendar.model;
 
+import com.ina.plantcalendar.database.RecurringEvent;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.context.annotation.Primary;
 
@@ -26,6 +27,8 @@ public class Plant {
     private int wateringRecurrence;
     @Column(name = "watering_pattern")
     private String wateringPatternText;
+    @OneToOne(mappedBy = "plant_information")
+    private RecurringEvent recurringEvent;
     public enum PlantType {
         FERN, SMALL_TREE, CACTUS, SUCCULENT, VINE, ORCHID, OTHER, NO_IDEA, CALATHEA, MARANTA, ARUM, HERB, CLIMBER
     }

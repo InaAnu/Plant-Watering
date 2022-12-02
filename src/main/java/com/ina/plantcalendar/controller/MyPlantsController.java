@@ -1,6 +1,7 @@
 package com.ina.plantcalendar.controller;
 
 import com.ina.plantcalendar.database.DataSource;
+import com.ina.plantcalendar.database.IDataSource;
 import com.ina.plantcalendar.model.Plant;
 import com.ina.plantcalendar.services.FooterService;
 import com.ina.plantcalendar.services.MyPlantsService;
@@ -22,7 +23,7 @@ import java.sql.SQLException;
 public class MyPlantsController {
 
     private final MyPlantsService myPlantsService;
-    private final DataSource dataSource;
+    private final IDataSource dataSource;
     private final FooterService footerService;
 
     @Autowired

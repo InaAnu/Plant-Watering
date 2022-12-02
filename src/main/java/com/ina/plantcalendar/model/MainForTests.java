@@ -11,9 +11,6 @@ import java.util.List;
 public class MainForTests {
     public static void main(String[] args) throws SQLException {
 
-        DataSource dataSource = new DataSource();
-
-//        dataSource.createViewForFullEventInfo();
     }
 
 }

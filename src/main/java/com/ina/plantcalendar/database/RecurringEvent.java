@@ -2,6 +2,7 @@ package com.ina.plantcalendar.database;
 
 import com.ina.plantcalendar.model.Event;
 import com.ina.plantcalendar.model.Plant;
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -19,7 +20,8 @@ public class RecurringEvent {
     @GenericGenerator(name = "native", strategy = "native")
     @Column(name = "_id")
     private int id;
-    @Column(name = "plant")
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "plant_id", referencedColumnName = "_id")
     private Plant plant;
     @Column(name = "type")
     @Enumerated(EnumType.STRING)

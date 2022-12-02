@@ -6,6 +6,7 @@ import com.ina.plantcalendar.model.Event;
 import com.ina.plantcalendar.services.EventsService;
 import com.ina.plantcalendar.model.Plant;
 import com.ina.plantcalendar.services.FooterService;
+import com.ina.plantcalendar.services.IEventsService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,7 +19,7 @@ import java.util.ArrayList;
 @Controller
 public class CalendarController {
 
-    private final EventsService eventsService;
+    private final IEventsService eventsService;
     private final FooterService footerService;
 
     public CalendarController(EventsService eventsService, FooterService footerService){

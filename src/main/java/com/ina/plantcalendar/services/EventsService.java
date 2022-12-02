@@ -1,18 +1,20 @@
 package com.ina.plantcalendar.services;
 
 import com.ina.plantcalendar.database.IDataSource;
+import com.ina.plantcalendar.database.RecurringEvent;
 import com.ina.plantcalendar.model.AggregatedEventsPerDay;
 import com.ina.plantcalendar.model.Event;
 import com.ina.plantcalendar.model.Plant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Component
+@Service
 public class EventsService implements IEventsService {
 
     private ArrayList<Event> events = new ArrayList<>();
@@ -26,13 +28,12 @@ public class EventsService implements IEventsService {
     // TODO I need to figure out what will happen if there are several plants under the name;
     public void addRecurringEvent(String plantScientificName, Event.EventType eventType, LocalDate startDate, LocalDate endDate) throws SQLException {
         Plant plant = dataSource.queryPlantByExactScientificName(plantScientificName);
-
         if (plant == null) {
             System.out.println("Plant not in the DB.");
             return;
         }
 
-        if (dataSource.isEventInDB(plantScientificName, eventType)) {
+        if (dataSource.isEventInDB(plantScientificName, eventType, startDate, endDate)) {
             return;
         } else {
             dataSource.addRecurringEvent(dataSource.queryPlantIdByScientificName(plant.getScientificName()), eventType, startDate, endDate);
@@ -49,7 +50,7 @@ public class EventsService implements IEventsService {
             return;
         }
 
-        if (dataSource.isEventInDB(plantScientificName, eventType)) {
+        if (dataSource.isEventInDB(plantScientificName, eventType, startDate, null)) {
             return;
         } else {
             dataSource.addRecurringEvent(dataSource.queryPlantIdByScientificName(plant.getScientificName()), eventType, startDate);
