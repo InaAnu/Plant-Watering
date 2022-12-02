@@ -1,7 +1,7 @@
 package com.ina.plantcalendar;
 
 
-import com.ina.plantcalendar.database.IDataSource;
+import com.ina.plantcalendar.database.IMyDataSource;
 import com.ina.plantcalendar.model.Event;
 import com.ina.plantcalendar.model.Plant;
 import com.ina.plantcalendar.services.EventsService;
@@ -16,12 +16,12 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class UpcomingEventsTests {
-    private IDataSource dataSource;
+    private IMyDataSource dataSource;
     private EventsService eventsService;
 
     @BeforeEach
     public void setUp() throws SQLException {
-        dataSource = Mockito.mock(IDataSource.class);
+        dataSource = Mockito.mock(IMyDataSource.class);
         eventsService = new EventsService(dataSource);
     }
 

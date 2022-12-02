@@ -1,12 +1,9 @@
 package com.ina.plantcalendar;
 
-import com.ina.plantcalendar.database.IDataSource;
 import com.ina.plantcalendar.database.RecurringEvent;
 import com.ina.plantcalendar.model.Event;
 import com.ina.plantcalendar.model.Plant;
-import com.ina.plantcalendar.services.EventsService;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import java.time.LocalDate;
 import java.util.List;

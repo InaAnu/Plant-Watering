@@ -20,7 +20,7 @@ public class ContactController {
     }
 
     @RequestMapping(value={"/contact"})
-    public String displayContact(Model model) throws SQLException {
+    public String displayContact(Model model) {
 
         footerService.fillFooterData(model);
 

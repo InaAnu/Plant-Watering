@@ -1,7 +1,7 @@
 package com.ina.plantcalendar.controller;
 
-import com.ina.plantcalendar.database.DataSource;
-import com.ina.plantcalendar.database.IDataSource;
+import com.ina.plantcalendar.database.MyDataSource;
+import com.ina.plantcalendar.database.IMyDataSource;
 import com.ina.plantcalendar.model.Plant;
 import com.ina.plantcalendar.services.FooterService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +18,11 @@ import java.util.stream.Collectors;
 @Controller
 public class PlantPageController {
 
-    private final IDataSource dataSource;
+    private final IMyDataSource dataSource;
     private final FooterService footerService;
 
     @Autowired
-    public PlantPageController(DataSource dataSource, FooterService footerService) {
+    public PlantPageController(MyDataSource dataSource, FooterService footerService) {
         this.dataSource = dataSource;
         this.footerService = footerService;
     }
