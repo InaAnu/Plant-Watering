@@ -3,6 +3,7 @@ package com.ina.plantcalendar.controller;
 import com.ina.plantcalendar.database.MyDataSource;
 import com.ina.plantcalendar.database.IMyDataSource;
 import com.ina.plantcalendar.dto.PlantDTO;
+import com.ina.plantcalendar.model.Event;
 import com.ina.plantcalendar.model.Plant;
 import com.ina.plantcalendar.services.EventsService;
 import com.ina.plantcalendar.services.FooterService;
@@ -19,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.List;
 
 @Slf4j
 @Controller
@@ -42,10 +45,11 @@ public class MyPlantsController {
 
         // Plants in the gallery
 
-        for (int i=0; i<6; i++) {
-            model.addAttribute("plant" + (i+1) + "_scientific_name", dataSource.queryPlants().get(i).getScientificName());
-            model.addAttribute("plant" + (i+1) + "_alias", dataSource.queryPlants().get(i).getAlias());
-            model.addAttribute("plant" + (i+1) + "_watering_pattern", dataSource.queryPlants().get(i).getWateringPatternText());
+        List<Plant> plants = dataSource.queryPlants();
+        for (int i=0; i< plants.size(); i++) {
+            model.addAttribute("plant" + (i+1) + "_scientific_name", plants.get(i).getScientificName());
+            model.addAttribute("plant" + (i+1) + "_alias", plants.get(i).getAlias());
+            model.addAttribute("plant" + (i+1) + "_watering_pattern", plants.get(i).getWateringPatternText());
         }
 
         footerService.fillFooterData(model);

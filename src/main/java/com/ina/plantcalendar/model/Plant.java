@@ -14,23 +14,25 @@ public class Plant {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
     @GenericGenerator(name = "native", strategy = "native")
-    @Column(name = "_id")
+    @Column(name = "_id", nullable=false)
     private int id;
-    @Column(name = "scientific_name")
+    @Column(name = "scientific_name", nullable=false)
     private String scientificName;
-    @Column(name = "alias")
+    @Column(name = "alias", nullable=false)
     private String alias;
     @Enumerated(EnumType.STRING)
-    @Column(name = "type")
+    @Column(name = "type", nullable=false)
     private PlantType type;
-    @Column(name = "watering_recurrence")
+    @Column(name = "watering_recurrence", nullable=false)
     private int wateringRecurrence;
-    @Column(name = "watering_pattern")
+    @Column(name = "watering_pattern", nullable=false)
     private String wateringPatternText;
-    @OneToOne(mappedBy = "plant_information")
-    private RecurringEvent recurringEvent;
+
     public enum PlantType {
         FERN, SMALL_TREE, CACTUS, SUCCULENT, VINE, ORCHID, OTHER, NO_IDEA, CALATHEA, MARANTA, ARUM, HERB, CLIMBER
+    }
+
+    public Plant() {
     }
 
     public Plant(String scientificName, PlantType type, int wateringRecurrence) {
@@ -50,7 +52,12 @@ public class Plant {
         this.wateringPatternText = getPatternText(wateringRecurrence);
     }
 
-    public Plant() {
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getScientificName() {

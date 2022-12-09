@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -91,8 +92,10 @@ public class MyDataSource implements IMyDataSource {
     @Override
     public List<Event> findAllEventsByDate(LocalDate from, LocalDate to) {
 
+        LocalDateTime fromWithTime = from.atStartOfDay();
+        LocalDateTime toWithTime = to.atStartOfDay();
         List<Event> events = new ArrayList<>();
-        List<RecurringEvent> recurringEvents = jpaRecurringEventRepo.findInTheDateRange(from, to);
+        List<RecurringEvent> recurringEvents = jpaRecurringEventRepo.findInTheDateRange(fromWithTime, toWithTime);
         for (var recurringEvent : recurringEvents) {
             List<Event> eventsFromTheRecurringEvent = recurringEvent.getAllEventsInTheDateRange(from,to);
             events.addAll(eventsFromTheRecurringEvent);

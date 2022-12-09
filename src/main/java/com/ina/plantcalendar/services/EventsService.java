@@ -5,6 +5,8 @@ import com.ina.plantcalendar.model.AggregatedEventsPerDay;
 import com.ina.plantcalendar.model.Event;
 import com.ina.plantcalendar.model.Plant;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;

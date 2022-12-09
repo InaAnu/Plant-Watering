@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface IJpaRecurringEventRepository extends CrudRepository<RecurringEvent, Integer> {
@@ -18,8 +19,9 @@ public interface IJpaRecurringEventRepository extends CrudRepository<RecurringEv
     @Query("SELECT e FROM RecurringEvent e WHERE e.plant.id = ?1 AND e.type = ?2")
     List<RecurringEvent> findByPlantIdAndEventType(int plantId, Event.EventType eventType);
 
-    @Query("SELECT e FROM RecurringEvent e WHERE e.startDate <= ?2 AND e.endDate IS NULL OR e.endDate >= ?1")
-    List<RecurringEvent> findInTheDateRange(LocalDate from, LocalDate to);
+    //TODO Check if this method gives correct results
+    @Query("SELECT e FROM RecurringEvent e WHERE (e.startDate <= ?2) AND (e.endDate IS NULL OR e.endDate >= ?1)")
+    List<RecurringEvent> findInTheDateRange(LocalDateTime from, LocalDateTime to);
 
     @Query("SELECT e FROM RecurringEvent e WHERE e.plant.scientificName = ?1 AND e.startDate <= ?3 AND e.endDate IS NULL OR e.endDate >= ?2")
     List<RecurringEvent> findByScientificNameInTheDateRange(String scientificName, LocalDate from, LocalDate to);
@@ -28,13 +30,13 @@ public interface IJpaRecurringEventRepository extends CrudRepository<RecurringEv
     List<RecurringEvent> findByPlantIdAndEventTypeInTheDateRange(int plantId, Event.EventType eventType, LocalDate from, LocalDate to);
 
 
-    @Transactional
-    @Modifying
-    @Query("INSERT INTO RecurringEvent e VALUES(:plant.id, :type, :startDate, :endDate)")
-    int addRecurringEventWithEndDate(int plant_id, Event.EventType type, LocalDate startDate, LocalDate endDate);
-
-    @Transactional
-    @Modifying
-    @Query("INSERT INTO RecurringEvent e VALUES(:plant.id, :type, :startDate)")
-    int addRecurringEventWithoutEndDate(int plant_id, Event.EventType type, LocalDate startDate);
+//    @Transactional
+//    @Modifying
+//    @Query("INSERT INTO RecurringEvent e VALUES(:e.plant.id, :e.type, :e.startDate, :e.endDate)")
+//    int addRecurringEventWithEndDate(int plantId, Event.EventType type, LocalDate startDate, LocalDate endDate);
+//
+//    @Transactional
+//    @Modifying
+//    @Query("INSERT INTO RecurringEvent e VALUES(:e.plant.id, :e.type, :e.startDate)")
+//    int addRecurringEventWithoutEndDate(int plantId, Event.EventType type, LocalDate startDate);
 }

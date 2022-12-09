@@ -136,4 +136,14 @@ public class GetAllEventsFromRecurringEventTests {
         assertEquals(recurringEvent.getStartDate(), result.get(0).getEventDate());
         assertEquals(recurringEvent.getStartDate().plusDays(1), result.get(1).getEventDate());
     }
+
+    @Test
+    public void whenTheStartDayOfTheRecurringEventIsOverAMonthBeforeTheBeginningOfTheRangeProvidedByTheUserEventsAreReturnedStartingAtTheBeginningOfTheRangeProvidedByTheUser() {
+        RecurringEvent recurringEvent = new RecurringEvent(plantWateredDaily, Event.EventType.WATERING,LocalDate.now().minusMonths(2),null);
+
+        var result = recurringEvent.getAllEventsInTheDateRange(LocalDate.now(),LocalDate.now().plusDays(6));
+
+        assertEquals(7, result.size());
+        assertEquals(recurringEvent.getStartDate().plusMonths(2), result.get(0).getEventDate());
+    }
 }
