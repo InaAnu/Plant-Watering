@@ -1,6 +1,7 @@
 package com.ina.plantcalendar.controller;
 
-import com.ina.plantcalendar.database.DataSource;
+import com.ina.plantcalendar.database.MyDataSource;
+import com.ina.plantcalendar.database.IMyDataSource;
 import com.ina.plantcalendar.model.Plant;
 import com.ina.plantcalendar.services.FooterService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,21 +10,19 @@ import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.Locale;
 import java.util.stream.Collectors;
 
 @Controller
 public class PlantPageController {
 
-    private final DataSource dataSource;
+    private final IMyDataSource dataSource;
     private final FooterService footerService;
 
     @Autowired
-    public PlantPageController(DataSource dataSource, FooterService footerService) {
+    public PlantPageController(MyDataSource dataSource, FooterService footerService) {
         this.dataSource = dataSource;
         this.footerService = footerService;
     }

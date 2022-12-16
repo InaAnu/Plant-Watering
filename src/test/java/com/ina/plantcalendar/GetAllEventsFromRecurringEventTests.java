@@ -1,12 +1,9 @@
 package com.ina.plantcalendar;
 
-import com.ina.plantcalendar.database.IDataSource;
 import com.ina.plantcalendar.database.RecurringEvent;
 import com.ina.plantcalendar.model.Event;
 import com.ina.plantcalendar.model.Plant;
-import com.ina.plantcalendar.services.EventsService;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -138,5 +135,15 @@ public class GetAllEventsFromRecurringEventTests {
         assertEquals(3, result.size());
         assertEquals(recurringEvent.getStartDate(), result.get(0).getEventDate());
         assertEquals(recurringEvent.getStartDate().plusDays(1), result.get(1).getEventDate());
+    }
+
+    @Test
+    public void whenTheStartDayOfTheRecurringEventIsOverAMonthBeforeTheBeginningOfTheRangeProvidedByTheUserEventsAreReturnedStartingAtTheBeginningOfTheRangeProvidedByTheUser() {
+        RecurringEvent recurringEvent = new RecurringEvent(plantWateredDaily, Event.EventType.WATERING,LocalDate.now().minusMonths(2),null);
+
+        var result = recurringEvent.getAllEventsInTheDateRange(LocalDate.now(),LocalDate.now().plusDays(6));
+
+        assertEquals(7, result.size());
+        assertEquals(recurringEvent.getStartDate().plusMonths(2), result.get(0).getEventDate());
     }
 }

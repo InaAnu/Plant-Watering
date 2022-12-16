@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
-import java.sql.SQLException;
 import java.util.stream.Collectors;
 
 
@@ -20,7 +19,7 @@ public class FooterService {
         this.eventsService = eventsService;
     }
 
-    public void fillFooterData(Model model) throws SQLException {
+    public void fillFooterData(Model model) {
         var upcomingEvents = eventsService.getUpcomingAggregatedEventsForTheUpcomingWeek()
                 .stream()
                 .map(event -> new UpcomingEventDTO(event.getPlants().stream().map(Plant::getAlias).collect(Collectors.toList()),

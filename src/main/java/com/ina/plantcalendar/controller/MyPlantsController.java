@@ -1,7 +1,11 @@
 package com.ina.plantcalendar.controller;
 
-import com.ina.plantcalendar.database.DataSource;
+import com.ina.plantcalendar.database.MyDataSource;
+import com.ina.plantcalendar.database.IMyDataSource;
+import com.ina.plantcalendar.dto.PlantDTO;
+import com.ina.plantcalendar.model.Event;
 import com.ina.plantcalendar.model.Plant;
+import com.ina.plantcalendar.services.EventsService;
 import com.ina.plantcalendar.services.FooterService;
 import com.ina.plantcalendar.services.MyPlantsService;
 import lombok.extern.slf4j.Slf4j;
@@ -16,17 +20,19 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.List;
 
 @Slf4j
 @Controller
 public class MyPlantsController {
 
     private final MyPlantsService myPlantsService;
-    private final DataSource dataSource;
+    private final IMyDataSource dataSource;
     private final FooterService footerService;
 
     @Autowired
-    public MyPlantsController(MyPlantsService myPlantsService, DataSource dataSource, FooterService footerService) {
+    public MyPlantsController(MyPlantsService myPlantsService, MyDataSource dataSource, FooterService footerService) {
         this.myPlantsService = myPlantsService;
         this.dataSource = dataSource;
         this.footerService = footerService;
@@ -39,10 +45,11 @@ public class MyPlantsController {
 
         // Plants in the gallery
 
-        for (int i=0; i<6; i++) {
-            model.addAttribute("plant" + (i+1) + "_scientific_name", dataSource.queryPlants().get(i).getScientificName());
-            model.addAttribute("plant" + (i+1) + "_alias", dataSource.queryPlants().get(i).getAlias());
-            model.addAttribute("plant" + (i+1) + "_watering_pattern", dataSource.queryPlants().get(i).getWateringPatternText());
+        List<Plant> plants = dataSource.queryPlants();
+        for (int i=0; i< plants.size(); i++) {
+            model.addAttribute("plant" + (i+1) + "_scientific_name", plants.get(i).getScientificName());
+            model.addAttribute("plant" + (i+1) + "_alias", plants.get(i).getAlias());
+            model.addAttribute("plant" + (i+1) + "_watering_pattern", plants.get(i).getWateringPatternText());
         }
 
         footerService.fillFooterData(model);
@@ -51,10 +58,9 @@ public class MyPlantsController {
     }
 
     @PostMapping(value={"/savePlant"})
-    // argument to this method should live in DTO package
-    public String savePlant(@Valid @ModelAttribute("plant") Plant plant, Errors errors) {
+    public String savePlant(@Valid @ModelAttribute("plant") PlantDTO plant, Errors errors) {
         if (errors.hasErrors()) {
-            log.error("From validation failed due to: " + errors.toString());
+            log.error("From validation failed due to: " + errors);
             return "my-plants.html";
         }
         myPlantsService.savePlant(plant);

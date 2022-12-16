@@ -17,7 +17,7 @@ public class HomeController {
     }
 
     @RequestMapping(value={"/","/home",""})
-    public String displayHomePage(Model model) throws SQLException {
+    public String displayHomePage(Model model) {
 
         footerService.fillFooterData(model);
 

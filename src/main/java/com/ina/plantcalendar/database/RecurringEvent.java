@@ -2,19 +2,43 @@ package com.ina.plantcalendar.database;
 
 import com.ina.plantcalendar.model.Event;
 import com.ina.plantcalendar.model.Plant;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.GenericGenerator;
 
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Period;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
+@Table(name = "events")
 public class RecurringEvent {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
+    @GenericGenerator(name = "native", strategy = "native")
+    @Column(name = "_id", nullable=false)
+    private int id;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "plant_id", referencedColumnName = "_id", nullable=false)
     private Plant plant;
+    @Column(name = "type", nullable=false)
+    @Enumerated(EnumType.STRING)
     private Event.EventType type;
     // startDate indicates the date of the first event
+    @Column(name = "start_date", nullable=false)
     private LocalDate startDate;
     // endDate indicates the date by which the recurring events will end. If set to null it means that the event has no end date and is still active.
+    @Column(name = "end_date", nullable=true)
     private LocalDate endDate;
+
+
+    public RecurringEvent() {
+    }
 
     public RecurringEvent(Plant plant, Event.EventType type, LocalDate startDate, LocalDate endDate) {
         this.plant = plant;
@@ -48,17 +72,20 @@ public class RecurringEvent {
     }
 
     public LocalDate getEndDate() {
-        return endDate;
+            return endDate;
     }
 
     public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
     }
 
+//    TODO correct this method
     public List<Event> getAllEventsInTheDateRange(LocalDate from, LocalDate to) {
         List<Event> events = new ArrayList<>();
         int recurrence = plant.getWateringRecurrence();
         // If event has no end date use the end date from the range provided by user
+        LocalDate endDate = getEndDate();
+        LocalDate startDate = getStartDate();
         if(endDate == null) {
             endDate = to;
         }
@@ -75,7 +102,7 @@ public class RecurringEvent {
                 return events;
             } else {
                 LocalDate firstEventInTheRange;
-                int numberOfDaysBetweenFromDateAndStartDate = from.compareTo(startDate);
+                int numberOfDaysBetweenFromDateAndStartDate = (int) startDate.until(from, ChronoUnit.DAYS);
                 if((numberOfDaysBetweenFromDateAndStartDate%recurrence) == 0) {
                     firstEventInTheRange = startDate.plusDays(numberOfDaysBetweenFromDateAndStartDate);
                 } else {
