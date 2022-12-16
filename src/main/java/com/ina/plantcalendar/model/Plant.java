@@ -12,9 +12,9 @@ import java.util.List;
 public class Plant {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "native")
     @GenericGenerator(name = "native", strategy = "native")
-    @Column(name = "_id", nullable=false)
+    @Column(name = "_id", nullable=false, columnDefinition = "serial")
     private int id;
     @Column(name = "scientific_name", nullable=false)
     private String scientificName;

@@ -92,10 +92,8 @@ public class MyDataSource implements IMyDataSource {
     @Override
     public List<Event> findAllEventsByDate(LocalDate from, LocalDate to) {
 
-        LocalDateTime fromWithTime = from.atStartOfDay();
-        LocalDateTime toWithTime = to.atStartOfDay();
         List<Event> events = new ArrayList<>();
-        List<RecurringEvent> recurringEvents = jpaRecurringEventRepo.findInTheDateRange(fromWithTime, toWithTime);
+        List<RecurringEvent> recurringEvents = jpaRecurringEventRepo.findInTheDateRange(from, to);
         for (var recurringEvent : recurringEvents) {
             List<Event> eventsFromTheRecurringEvent = recurringEvent.getAllEventsInTheDateRange(from,to);
             events.addAll(eventsFromTheRecurringEvent);

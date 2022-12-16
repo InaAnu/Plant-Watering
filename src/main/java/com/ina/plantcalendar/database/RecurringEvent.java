@@ -31,10 +31,10 @@ public class RecurringEvent {
     private Event.EventType type;
     // startDate indicates the date of the first event
     @Column(name = "start_date", nullable=false)
-    private LocalDateTime startDate;
+    private LocalDate startDate;
     // endDate indicates the date by which the recurring events will end. If set to null it means that the event has no end date and is still active.
     @Column(name = "end_date", nullable=true)
-    private LocalDateTime endDate;
+    private LocalDate endDate;
 
 
     public RecurringEvent() {
@@ -43,12 +43,8 @@ public class RecurringEvent {
     public RecurringEvent(Plant plant, Event.EventType type, LocalDate startDate, LocalDate endDate) {
         this.plant = plant;
         this.type = type;
-        this.startDate = startDate.atStartOfDay();
-        if(endDate == null) {
-            this.endDate = null;
-        } else {
-            this.endDate = endDate.atStartOfDay();
-        }
+        this.startDate = startDate;
+        this.endDate = endDate;
     }
 
     public Plant getPlant() {
@@ -68,23 +64,19 @@ public class RecurringEvent {
     }
 
     public LocalDate getStartDate() {
-        return startDate.toLocalDate();
+        return startDate;
     }
 
     public void setStartDate(LocalDate startDate) {
-        this.startDate = startDate.atStartOfDay();
+        this.startDate = startDate;
     }
 
     public LocalDate getEndDate() {
-        if(this.endDate == null) {
-            return null;
-        } else {
-            return endDate.toLocalDate();
-        }
+            return endDate;
     }
 
     public void setEndDate(LocalDate endDate) {
-        this.endDate = endDate.atStartOfDay();
+        this.endDate = endDate;
     }
 
 //    TODO correct this method
@@ -92,32 +84,33 @@ public class RecurringEvent {
         List<Event> events = new ArrayList<>();
         int recurrence = plant.getWateringRecurrence();
         // If event has no end date use the end date from the range provided by user
-        if(getEndDate() == null) {
-            setEndDate(to);
+        LocalDate endDate = getEndDate();
+        LocalDate startDate = getStartDate();
+        if(endDate == null) {
+            endDate = to;
         }
 
-        LocalDate startDate = getStartDate();
-        if(from.isAfter(getEndDate()) || to.isBefore(getStartDate())) {
+        if(from.isAfter(endDate) || to.isBefore(startDate)) {
             return List.of();
         } else {
-            if(!from.isAfter(getStartDate())) {
-                LocalDate currentEventDate = getStartDate();
-                while(!currentEventDate.isAfter(to) && !currentEventDate.isAfter(getEndDate())) {
+            if(!from.isAfter(startDate)) {
+                LocalDate currentEventDate = startDate;
+                while(!currentEventDate.isAfter(to) && !currentEventDate.isAfter(endDate)) {
                     events.add(new Event(plant, type, currentEventDate));
                     currentEventDate = currentEventDate.plusDays(recurrence);
                 }
                 return events;
             } else {
                 LocalDate firstEventInTheRange;
-                int numberOfDaysBetweenFromDateAndStartDate = (int) getStartDate().until(from, ChronoUnit.DAYS);
+                int numberOfDaysBetweenFromDateAndStartDate = (int) startDate.until(from, ChronoUnit.DAYS);
                 if((numberOfDaysBetweenFromDateAndStartDate%recurrence) == 0) {
-                    firstEventInTheRange = getStartDate().plusDays(numberOfDaysBetweenFromDateAndStartDate);
+                    firstEventInTheRange = startDate.plusDays(numberOfDaysBetweenFromDateAndStartDate);
                 } else {
                     int plusDays = (((int)numberOfDaysBetweenFromDateAndStartDate/recurrence)+1)*recurrence;
-                    firstEventInTheRange = getStartDate().plusDays(plusDays);
+                    firstEventInTheRange = startDate.plusDays(plusDays);
                 }
                 LocalDate currentEventDate = firstEventInTheRange;
-                while(!currentEventDate.isAfter(to) && !currentEventDate.isAfter(getEndDate())) {
+                while(!currentEventDate.isAfter(to) && !currentEventDate.isAfter(endDate)) {
                     events.add(new Event(plant, type, currentEventDate));
                     currentEventDate = currentEventDate.plusDays(recurrence);
                 }
