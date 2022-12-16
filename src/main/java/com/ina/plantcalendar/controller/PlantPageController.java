@@ -42,6 +42,7 @@ public class PlantPageController {
                         event.getEventDate().getDayOfMonth() + " " +
                         StringUtils.capitalize(event.getEventDate().getMonth().toString().toLowerCase()) + " | " +
                          StringUtils.capitalize(event.getEventType().toString().toLowerCase())))
+                .limit(5)
                 .collect(Collectors.toList()));
 
         footerService.fillFooterData(model);
