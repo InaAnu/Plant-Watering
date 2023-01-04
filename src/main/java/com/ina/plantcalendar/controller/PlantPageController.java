@@ -44,6 +44,7 @@ public class PlantPageController {
                          StringUtils.capitalize(event.getEventType().toString().toLowerCase())))
                 .limit(5)
                 .collect(Collectors.toList()));
+        model.addAttribute("image_file_name", plant.getScientificName().replaceAll(" ", ""));
 
         footerService.fillFooterData(model);
 
