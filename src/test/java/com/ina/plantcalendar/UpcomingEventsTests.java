@@ -20,13 +20,13 @@ public class UpcomingEventsTests {
     private EventsService eventsService;
 
     @BeforeEach
-    public void setUp() throws SQLException {
+    public void setUp() {
         dataSource = Mockito.mock(IMyDataSource.class);
         eventsService = new EventsService(dataSource);
     }
 
     @Test
-    public void whenThereAreNoEventsThereShouldBeNoResults() throws SQLException {
+    public void whenThereAreNoEventsThereShouldBeNoResults() {
         // arrange
         Mockito.when(dataSource.findAllEventsByDate(Mockito.any(), Mockito.any()))
                 .thenReturn(List.of());
@@ -39,7 +39,7 @@ public class UpcomingEventsTests {
     }
 
     @Test
-    public void whenThereIsOneEventThereIsOneGroupWithSinglePlant() throws SQLException {
+    public void whenThereIsOneEventThereIsOneGroupWithSinglePlant() {
         Event event = new Event();
         event.setEventDate(LocalDate.now());
         event.setEventType(Event.EventType.WATERING);
@@ -56,7 +56,7 @@ public class UpcomingEventsTests {
     }
 
     @Test
-    public void whenThereAreTwoEventsOnTheSameDayThenThereAreTwoPlantsForTheAggregatedEvent() throws SQLException {
+    public void whenThereAreTwoEventsOnTheSameDayThenThereAreTwoPlantsForTheAggregatedEvent() {
         Plant plant1 = new Plant("plantus scientificus1", "scientific plant1", Plant.PlantType.SUCCULENT, 1);
         Plant plant2 = new Plant("plantus scientificus2", "scientific plant2", Plant.PlantType.SUCCULENT, 1);
         Event event1 = new Event();
@@ -78,7 +78,7 @@ public class UpcomingEventsTests {
     }
 
     @Test
-    public void whenThereAreTwoEventsOnSeparateDaysThereAreTwoAggregatedEventsWithSinglePlant() throws SQLException {
+    public void whenThereAreTwoEventsOnSeparateDaysThereAreTwoAggregatedEventsWithSinglePlant() {
         Plant plant = new Plant("plantus scientificus", "scientific plant", Plant.PlantType.SUCCULENT, 1);
         Event event1 = new Event();
         event1.setEventDate(LocalDate.now());
@@ -101,7 +101,7 @@ public class UpcomingEventsTests {
     }
 
     @Test
-    public void checkMockitoVerifyForDataSource() throws SQLException {
+    public void checkMockitoVerifyForDataSource() {
         Mockito.when(dataSource.findAllEventsByDate(Mockito.any(), Mockito.any())).thenReturn(List.of());
 
         eventsService.getUpcomingAggregatedEventsForTheUpcomingWeek();

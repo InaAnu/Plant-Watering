@@ -19,8 +19,7 @@ import java.util.List;
 public class RecurringEvent {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "native")
-    @GenericGenerator(name = "native", strategy = "native")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "_id", nullable=false, columnDefinition = "serial")
     private int id;
     @OneToOne(cascade = CascadeType.ALL)

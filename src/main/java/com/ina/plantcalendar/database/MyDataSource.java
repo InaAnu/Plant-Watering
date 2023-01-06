@@ -44,8 +44,7 @@ public class MyDataSource implements IMyDataSource {
 
     @Override
     public boolean isEventInDB(String scientificName, Event.EventType eventType, LocalDate from, LocalDate to) {
-        int plantId = jpaPlantRepo.queryIdByScientificName(scientificName);
-        List<RecurringEvent> recurringEvents = jpaRecurringEventRepo.findByPlantIdAndEventTypeInTheDateRange(plantId, eventType, from, to);
+        List<RecurringEvent> recurringEvents = jpaRecurringEventRepo.findByScientificNameAndEventTypeInTheDateRange(scientificName, eventType, from, to);
 
         if (recurringEvents != null) {
             System.out.println("Event is already in the database.");
