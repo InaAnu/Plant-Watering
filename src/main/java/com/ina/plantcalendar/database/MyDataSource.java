@@ -54,6 +54,11 @@ public class MyDataSource implements IMyDataSource {
         }
     }
 
+    @Override
+    public void addPlant(String scientificName, String alias, Plant.PlantType type, int wateringRecurrence) {
+        Plant plant = jpaPlantRepo.save(new Plant(scientificName, alias, type, wateringRecurrence));
+    }
+
 //    @Override
 //    public boolean addRecurringEvent(int plantId, Event.EventType eventType, LocalDate startDate, LocalDate endDate) {
 //

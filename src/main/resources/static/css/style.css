@@ -1777,14 +1777,14 @@ i.fa.fa-pencil{
 	margin: 3em 0 0 0;
 }
 .w3layouts-contact-form-top h3,.contact-form-top h3{
-    color: #212121;
+    color: #4C4C4C;
     font-size: 1.5em;
     margin: 0 0 1em 0;
     letter-spacing: 1px;
     font-family: 'Raleway', sans-serif;
 }
 .w3layouts-contact-form-top p{
-    color: #999999;
+    color: #4C4C4C;
     font-size: .9em;
     margin: 2em 0 0 0;
     line-height: 1.8em;
@@ -1874,7 +1874,7 @@ i.fa.fa-pencil{
     outline: none;
     padding: 10px 15px 10px 15px;
     font-size: .9em;
-    color: #BBBBBB;
+    color: #6A6A6A;
     margin-bottom: 1.5em;
 }
 .agileinfo-contact-form-grid textarea {
@@ -1885,14 +1885,14 @@ i.fa.fa-pencil{
     height: 150px;
     outline: none;
     font-size: 0.9em;
-    color: #BBBBBB;
+    color: #6A6A6A;
     resize: none;
     padding: 10px 15px 10px 15px;
     margin-bottom: 1em;
 }
 button.btn1{
     border: solid 1px #212121;
-    color: #212121;
+    color: #4C4C4C;
     font-size: .875em;
     padding: .5em 2em;
     text-decoration: none;
@@ -1916,6 +1916,10 @@ button.btn1:hover{
     min-height: 300px;
     width: 100%;
 	margin:2em 0 0 0;
+}
+
+.form-display-error {
+    color: #8F3A48E8;
 }
 /*-- //contact --*/
 /*-- to-top --*/

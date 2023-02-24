@@ -58,14 +58,13 @@ License URL: http://creativecommons.org/licenses/by/3.0/
         <div class="agile-contact-form">
             <div class="col-md-6 contact-form-left">
                 <div class="w3layouts-contact-form-top">
-                    <h3>Find your plant in the gallery or search by name</h3>
+                    <h3>Find your plant in the gallery</h3>
                     <!-- TODO implement a search bar for the plants -->
                 </div>
                 <div class="agileits-contact-address">
                     <ul>
-                        <li><a th:href="@{/myplants(add_plant='true')}"><i class="fa fa-plus" aria-hidden="true"></i></a> <span>Add a new plant</span></li>
-                        <!-- TODO Now we have Calathea hardcoded - make it so that any plant can be added and send this information to the database. -->
-                        <!-- TODO Ensure that there is a dropdown menu for types of plants, as we are using an enum for this-->
+                        <li><a th:href="@{/savePlant}"><i class="fa fa-plus" aria-hidden="true"></i></a> <span>Add a new plant</span></li>
+                        <li><a th:href="@{/saveEvent}"><i class="fa fa-plus" aria-hidden="true"></i></a> <span>Add a new event</span></li>
                     </ul>
                 </div>
             </div>
@@ -75,20 +74,17 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                 </div>
                 <div class="agileinfo-contact-form-grid">
                     <ul>
-                        <li class="alert alert-danger" role="alert"
-                            th:each="error : ${#fields.errors('plant.*')}" th:text="${error}" />
+                        <li class="form-display-error" th:each="error : ${#fields.errors('plant.*')}" th:text="${error}" />
+                        <li class="form-display-error" th:if="${error_plant_already_exists} == true">This plant already exists!</li>
                     </ul>
                     <form th:action="@{/savePlant}" method="post" th:object="${plant}">
-                        <input type="text" th:field="*{scientificName}" placeholder="Plant name" required=true>
-                        <input type="text" th:field="*{alias}" placeholder="Alias" required="true">
-                        <select type="text" th:field="*{type}" placeholder="Type" required="true">
-                            <option value="">Type </option>
-                            <option value="Plant.PlantType.CALATHEA">Calathea</option>
-<!--                            TODO implement the other options for the dropdown menu-->
+                        <input type="text" th:field="*{scientificName}" placeholder="Plant name">
+                        <input type="text" th:field="*{alias}" placeholder="Alias">
+                        <select type="text" th:field="*{type}" placeholder="Type">
+                            <option value="">Type</option>
+                            <option th:each="plant_type:${plant_types}" th:value ="${plant_type}" th:text="${plant_type}"></option>
                         </select>
-<!--                        <textarea th:field="*{additionalInfo}" placeholder="Additional information" required=""></textarea>-->
-                        <input type="text" th:field="*{wateringRecurrence}" placeholder="How often does it need to be watered?" required=""> <!--TODO This should be a dropdown menu with options -->
-
+                        <input type="text" th:field="*{wateringRecurrence}" placeholder="How often does it need to be watered?"> <!--TODO This should be a dropdown menu with options -->
                         <!-- TODO Add an option to add a photo of your plant. If no photo, form should be accepted, but only the name in a fancy font should be displayed in the gallery. -->
                         <button class="btn1">Submit</button>
                     </form>

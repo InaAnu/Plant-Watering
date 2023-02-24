@@ -17,9 +17,11 @@ public interface IMyDataSource {
 
     boolean isEventInDB(String scientificName, Event.EventType eventType, LocalDate from, LocalDate to);
 
-//    boolean addRecurringEvent(int plantId, Event.EventType eventType, LocalDate startDate, LocalDate endDate) throws SQLException;
+    void addPlant(String scientificName, String alias, Plant.PlantType type, int wateringRecurrence);
+
+//    boolean addRecurringEvent(int plantId, Event.EventType eventType, LocalDate startDate, LocalDate endDate);
 //
-//    boolean addRecurringEvent(int plantId, Event.EventType eventType, LocalDate startDate) throws SQLException;
+//    boolean addRecurringEvent(int plantId, Event.EventType eventType, LocalDate startDate);
 
     default List<Event> findAllEventsByDate(LocalDate from, LocalDate to) {
         return List.of();
