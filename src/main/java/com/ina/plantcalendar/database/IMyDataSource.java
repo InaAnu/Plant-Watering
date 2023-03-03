@@ -28,4 +28,6 @@ public interface IMyDataSource {
     default List<Event> findAllEventsForAPlantByDate(LocalDate from, LocalDate to, String scientificName) {
         return List.of();
     }
+
+    Plant queryPlantByExactScientificNameOrExactAlias(String name);
 }

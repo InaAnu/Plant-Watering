@@ -17,7 +17,6 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
 import java.sql.SQLException;
@@ -105,7 +104,7 @@ public class MyPlantsController {
             log.error("Form validation failed due to: " + errors.getAllErrors());
             return "my-plants.html";
         }
-        if(dataSource.queryPlantByExactScientificName(event.getPlantScientificName()) == null) {
+        if(dataSource.queryPlantByExactScientificNameOrExactAlias(event.getPlantName()) == null) {
             model.addAttribute("error_plant_does_not_exist", true);
             return "my-plants.html";
         }

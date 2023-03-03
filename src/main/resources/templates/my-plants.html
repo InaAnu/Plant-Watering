@@ -101,7 +101,7 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                         <li class="form-display-error" th:if="${error_event_already_exists} == true">This event already exists!</li>
                     </ul>
                     <form th:action="@{/saveEvent}" method="post" th:object="${event}">
-                        <input type="text" th:field="*{plantScientificName}" placeholder="Plant name">
+                        <input type="text" th:field="*{plantName}" placeholder="Plant name">
                         <select type="text" th:field="*{type}" placeholder="Event type">
                             <option value="">Type</option>
                             <option th:each="event_type:${event_types}" th:value="${event_type}" th:text="${event_type}"></option>

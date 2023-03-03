@@ -25,10 +25,10 @@ public class EventsService {
 
     public boolean saveRecurringEvent(EventDTO eventDTO) throws SQLException {
         boolean isSaved = false;
-        if (dataSource.queryPlantByExactScientificName(eventDTO.getPlantScientificName()) == null) {
+        if (dataSource.queryPlantByExactScientificNameOrExactAlias(eventDTO.getPlantName()) == null) {
             return isSaved;
         }
-        Plant plant = dataSource.queryPlantByExactScientificName(eventDTO.getPlantScientificName());
+        Plant plant = dataSource.queryPlantByExactScientificNameOrExactAlias(eventDTO.getPlantName());
         Event.EventType eventType = Event.EventType.valueOf(eventDTO.getType());
         LocalDate eventDate = calculateEventDate(plant, eventDTO.getLastWateredOn());
         if (!dataSource.isEventInDB(plant,eventType,eventDate,null)) {

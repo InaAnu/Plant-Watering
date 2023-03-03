@@ -33,6 +33,11 @@ public class MyDataSource implements IMyDataSource {
     }
 
     @Override
+    public Plant queryPlantByExactScientificNameOrExactAlias(String name) {
+        return jpaPlantRepo.queryByExactScientificNameOrExactAlias(name);
+    }
+
+    @Override
     public List<Plant> queryPlants() {
         return (List<Plant>) jpaPlantRepo.findAll();
     }
