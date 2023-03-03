@@ -1866,7 +1866,7 @@ i.fa.fa-pencil{
 .agileinfo-contact-form-grid{
     margin: 2em 0 0 0;
 }
-.agileinfo-contact-form-grid input[type="text"],.agileinfo-contact-form-grid input[type="email"], .agileinfo-contact-form-grid select{
+.agileinfo-contact-form-grid input[type="text"],.agileinfo-contact-form-grid input[type="email"], .agileinfo-contact-form-grid select, .agileinfo-contact-form-grid input[type="date"]{
     display: inline-block;
     background: none;
     border: 1.5px solid #BBBBBB;
@@ -2414,7 +2414,7 @@ button.btn1:hover{
 	.media-left.response-text-left {
 		width: 25%;
 	}
-	.agileinfo-contact-form-grid input[type="text"], .agileinfo-contact-form-grid input[type="email"] {
+	.agileinfo-contact-form-grid input[type="text"], .agileinfo-contact-form-grid input[type="email"], .agileinfo-contact-form-grid input[type="date"] {
 		margin-bottom: 1em;
 	}
 	.w3agile-map iframe {

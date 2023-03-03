@@ -15,13 +15,11 @@ public interface IMyDataSource {
 
     int queryPlantIdByScientificName(String scientificName) throws SQLException;
 
-    boolean isEventInDB(String scientificName, Event.EventType eventType, LocalDate from, LocalDate to);
+    boolean isEventInDB(Plant plant, Event.EventType eventType, LocalDate from, LocalDate to);
 
     void addPlant(String scientificName, String alias, Plant.PlantType type, int wateringRecurrence);
 
-//    boolean addRecurringEvent(int plantId, Event.EventType eventType, LocalDate startDate, LocalDate endDate);
-//
-//    boolean addRecurringEvent(int plantId, Event.EventType eventType, LocalDate startDate);
+    void addRecurringEvent(Plant plant, Event.EventType eventType, LocalDate startDate);
 
     default List<Event> findAllEventsByDate(LocalDate from, LocalDate to) {
         return List.of();

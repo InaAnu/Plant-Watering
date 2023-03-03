@@ -1,12 +1,11 @@
 package com.ina.plantcalendar.services;
 
 import com.ina.plantcalendar.database.IMyDataSource;
+import com.ina.plantcalendar.dto.EventDTO;
 import com.ina.plantcalendar.model.AggregatedEventsPerDay;
 import com.ina.plantcalendar.model.Event;
 import com.ina.plantcalendar.model.Plant;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
@@ -24,38 +23,20 @@ public class EventsService {
         this.dataSource = dataSource;
     }
 
-//    public void addRecurringEvent(String plantScientificName, Event.EventType eventType, LocalDate startDate, LocalDate endDate) throws SQLException {
-//        Plant plant = dataSource.queryPlantByExactScientificName(plantScientificName);
-//        if (plant == null) {
-//            System.out.println("Plant not in the DB.");
-//            return;
-//        }
-//
-//        if (dataSource.isEventInDB(plantScientificName, eventType, startDate, endDate)) {
-//            return;
-//        } else {
-//            dataSource.addRecurringEvent(dataSource.queryPlantIdByScientificName(plant.getScientificName()), eventType, startDate, endDate);
-//        }
-//
-//        // TODO Add logic for changing the event
-//    }
-//
-//    public void addRecurringEvent(String plantScientificName, Event.EventType eventType, LocalDate startDate) throws SQLException {
-//        Plant plant = dataSource.queryPlantByExactScientificName(plantScientificName);
-//
-//        if (plant == null) {
-//            System.out.println("Plant not in the DB.");
-//            return;
-//        }
-//
-//        if (dataSource.isEventInDB(plantScientificName, eventType, startDate, null)) {
-//            return;
-//        } else {
-//            dataSource.addRecurringEvent(dataSource.queryPlantIdByScientificName(plant.getScientificName()), eventType, startDate);
-//        }
-//
-//        // TODO Add logic for changing the event
-//    }
+    public boolean saveRecurringEvent(EventDTO eventDTO) throws SQLException {
+        boolean isSaved = false;
+        if (dataSource.queryPlantByExactScientificName(eventDTO.getPlantScientificName()) == null) {
+            return isSaved;
+        }
+        Plant plant = dataSource.queryPlantByExactScientificName(eventDTO.getPlantScientificName());
+        Event.EventType eventType = Event.EventType.valueOf(eventDTO.getType());
+        LocalDate eventDate = calculateEventDate(plant, eventDTO.getLastWateredOn());
+        if (!dataSource.isEventInDB(plant,eventType,eventDate,null)) {
+            dataSource.addRecurringEvent(plant, eventType, eventDate);
+            isSaved = true;
+        }
+        return isSaved;
+    }
 
     public List<Event> getEventsForAPlantInTheDateRange(String scientificName, LocalDate from, LocalDate to) {
         List<Event> allFoundEvents = dataSource.findAllEventsForAPlantByDate(from, to, scientificName);
@@ -80,6 +61,11 @@ public class EventsService {
         return allEventsForTheWeek.stream()
                 .sorted(Comparator.comparing(AggregatedEventsPerDay::getDate))
                 .collect(Collectors.toList());
+    }
+
+    public LocalDate calculateEventDate(Plant plant, LocalDate lastWateredOn) {
+        int wateringRecurrence = plant.getWateringRecurrence();
+        return lastWateredOn.plusDays(wateringRecurrence);
     }
 }
 

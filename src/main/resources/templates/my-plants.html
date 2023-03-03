@@ -90,6 +90,28 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                     </form>
                 </div>
             </div>
+            <div class="col-md-6 contact-form-right" th:if="${add_event} == true">
+                <div class="contact-form-top">
+                    <h3>Add new event</h3>
+                </div>
+                <div class="agileinfo-contact-form-grid">
+                    <ul>
+                        <li class="form-display-error" th:each="error : ${#fields.errors('event.*')}" th:text="${error}" />
+                        <li class="form-display-error" th:if="${error_plant_does_not_exist} == true">This plant does not exist!</li>
+                        <li class="form-display-error" th:if="${error_event_already_exists} == true">This event already exists!</li>
+                    </ul>
+                    <form th:action="@{/saveEvent}" method="post" th:object="${event}">
+                        <input type="text" th:field="*{plantScientificName}" placeholder="Plant name">
+                        <select type="text" th:field="*{type}" placeholder="Event type">
+                            <option value="">Type</option>
+                            <option th:each="event_type:${event_types}" th:value="${event_type}" th:text="${event_type}"></option>
+                        </select>
+                        <input type="date" th:field="*{lastWateredOn}" placeholder="When did you last water your plant?">
+                        <button class="btn1">Submit</button>
+                    </form>
+                </div>
+            </div>
+
             <div class="clearfix"> </div>
         </div>
     </div>

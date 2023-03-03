@@ -43,10 +43,10 @@ public class MyDataSource implements IMyDataSource {
     }
 
     @Override
-    public boolean isEventInDB(String scientificName, Event.EventType eventType, LocalDate from, LocalDate to) {
-        List<RecurringEvent> recurringEvents = jpaRecurringEventRepo.findByScientificNameAndEventTypeInTheDateRange(scientificName, eventType, from, to);
+    public boolean isEventInDB(Plant plant, Event.EventType eventType, LocalDate from, LocalDate to) {
+        List<RecurringEvent> recurringEvents = jpaRecurringEventRepo.findByScientificNameAndEventTypeInTheDateRange(plant.getScientificName(), eventType, from, to);
 
-        if (recurringEvents != null) {
+        if (recurringEvents.size() != 0) {
             System.out.println("Event is already in the database.");
             return true;
         } else {
@@ -56,30 +56,13 @@ public class MyDataSource implements IMyDataSource {
 
     @Override
     public void addPlant(String scientificName, String alias, Plant.PlantType type, int wateringRecurrence) {
-        Plant plant = jpaPlantRepo.save(new Plant(scientificName, alias, type, wateringRecurrence));
+        jpaPlantRepo.save(new Plant(scientificName, alias, type, wateringRecurrence));
     }
 
-//    @Override
-//    public boolean addRecurringEvent(int plantId, Event.EventType eventType, LocalDate startDate, LocalDate endDate) {
-//
-//        boolean isUpdated = false;
-//        int rows = jpaRecurringEventRepo.addRecurringEventWithEndDate(plantId, eventType, startDate, endDate);
-//        if (rows > 0) {
-//            isUpdated = true;
-//        }
-//        return isUpdated;
-//    }
-//
-//    @Override
-//    public boolean addRecurringEvent(int plantId, Event.EventType eventType, LocalDate startDate) {
-//
-//        boolean isUpdated = false;
-//        int rows = jpaRecurringEventRepo.addRecurringEventWithoutEndDate(plantId, eventType, startDate);
-//        if (rows > 0) {
-//            isUpdated = true;
-//        }
-//        return isUpdated;
-//    }
+    @Override
+    public void addRecurringEvent(Plant plant, Event.EventType eventType, LocalDate startDate) {
+        jpaRecurringEventRepo.save(new RecurringEvent(plant,eventType, startDate, null));
+    }
 
     @Override
     public List<Event> findAllEventsForAPlantByDate(LocalDate from, LocalDate to, String scientificName) {

@@ -15,7 +15,6 @@ public class PlantDTO {
     private String scientificName;
     @NotBlank(message = "Your plants does not have a name? Just call it \"The Plant in the Kitchen\"")
     private String alias;
-    // TODO check out how to add this information as a drop down menu
     @NotBlank(message = "Type must not be blank")
     private String type;
     @Range(min=1, max=31, message = "Number of days must be between 1 and 31")
