@@ -14,7 +14,9 @@
 	<name>Plant-Watering</name>
 	<description>Plant watering project</description>
 	<properties>
-		<java.version>11</java.version>
+		<java.version>17</java.version>
+		<maven.compiler.source>11</maven.compiler.source>
+		<maven.compiler.target>11</maven.compiler.target>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -35,6 +37,7 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
+			<version>1.18.26</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
@@ -69,7 +72,17 @@
 			<version>2.1.214</version>
 			<scope>runtime</scope>
 		</dependency>
-    </dependencies>
+		<dependency>
+			<groupId>org.mapstruct</groupId>
+			<artifactId>mapstruct</artifactId>
+			<version>1.5.3.Final</version>
+		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok-mapstruct-binding</artifactId>
+			<version>0.2.0</version>
+		</dependency>
+	</dependencies>
 
 	<build>
 		<plugins>

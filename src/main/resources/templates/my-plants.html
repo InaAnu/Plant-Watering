@@ -78,8 +78,8 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                         <li class="form-display-error" th:if="${error_plant_already_exists} == true">This plant already exists!</li>
                     </ul>
                     <form th:action="@{/savePlant}" method="post" th:object="${plant}">
-                        <input type="text" th:field="*{scientificName}" placeholder="Plant name">
-                        <input type="text" th:field="*{alias}" placeholder="Alias">
+                        <input type="text" th:field="*{alias}" placeholder="Plant name">
+                        <input type="text" th:field="*{scientificName}" placeholder="Latin name">
                         <select type="text" th:field="*{type}" placeholder="Type">
                             <option value="">Type</option>
                             <option th:each="plant_type:${plant_types}" th:value ="${plant_type}" th:text="${plant_type}"></option>
